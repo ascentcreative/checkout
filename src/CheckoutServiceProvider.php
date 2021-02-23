@@ -1,6 +1,6 @@
 <?php
 
-namespace AscentCreative\CMS;
+namespace AscentCreative\Checkout;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
