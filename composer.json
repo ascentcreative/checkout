@@ -1,0 +1,23 @@
+{
+  "name": "ascentcreative/checkout",
+  "description": "Basket, Checkout and Order Management Functions",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Ascent Creative",
+      "email": "info@ascent-creative.co.uk"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "AscentCreative\\Checkout\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+        "providers": [
+            "AscentCreative\\Checkout\\CheckoutServiceProvider"
+        ]
+    }
+}
+}
