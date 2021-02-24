@@ -59,6 +59,12 @@ class CheckoutServiceProvider extends ServiceProvider
     
       ], 'public');
 
+
+      $this->publishes([
+        __DIR__.'/config/checkout.php' => config_path('checkout.php'),
+      ]);
+
+
     }
 
 
