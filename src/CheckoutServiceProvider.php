@@ -4,7 +4,10 @@ namespace AscentCreative\Checkout;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Session;
 
+
+use AscentCreative\Checkout\Models\Basket;
 
 class CheckoutServiceProvider extends ServiceProvider
 {
@@ -16,10 +19,10 @@ class CheckoutServiceProvider extends ServiceProvider
 
   public function boot()
   {
+
     // Register the helpers php file which includes convenience functions:
-   // require_once (__DIR__.'/Helpers/ascenthelpers.php');
-
-
+    require_once (__DIR__.'/Helpers/checkout.php');
+    
     $this->bootDirectives();
     $this->bootComponents();
     $this->bootPublishes();

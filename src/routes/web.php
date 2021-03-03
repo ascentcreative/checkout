@@ -1,7 +1,13 @@
 <?php
+use Illuminate\Support\Facades\Route;
 
-Route::prefix('cms')->group(function() {
+//Route::get('/basket', [AscentCreative\Checkout\Controllers\BasketController::class, 'index']);
+//Route::get('/basket', [App\Http\Controllers\BasketController::class, 'index']);
 
-    Route::get('/bibleref/parse/{term}', [AscentCreative\CMS\Controllers\BibleRefController::class, 'parse']);
+Route::middleware(['web'])->group(function () {
 
+    Route::get('/basket', [AscentCreative\Checkout\Controllers\BasketController::class, 'index']);
+    
 });
+
+

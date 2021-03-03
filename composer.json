@@ -19,5 +19,8 @@
             "AscentCreative\\Checkout\\CheckoutServiceProvider"
         ]
     }
-}
+},
+  "require": {
+    "stripe/stripe-php": "^7.75"
+  }
 }
