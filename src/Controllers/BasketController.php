@@ -12,18 +12,8 @@ class BasketController extends Controller
    
     public function index() {
 
-      
-      echo 'BASKET';
+      return view('checkout::basket.contents');
 
-      print_r(basket());
-
-      foreach(basket()->items()->get() as $item) {
-
-        echo '<P>' . $item->sellable->getItemName() . ' (' . $item->qty . ' @ ' . $item->sellable->getItemPrice() . ')</P>';
-
-      }
-
-      echo 'END';
     }
 
 }
