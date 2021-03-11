@@ -16,9 +16,9 @@ class Base extends Model
 {
     use HasFactory;
 
-    public function getTable()
+ /*   public function getTable()
     {
         return 'checkout_' . ($this->table ?? Str::snake(Str::pluralStudly(class_basename($this))));
-    }
+    } */
 
 }

@@ -5,6 +5,9 @@ namespace AscentCreative\Checkout;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Event;
+
+use AscentCreative\Checkout\Providers\EventServiceProvider;
 
 
 use AscentCreative\Checkout\Models\Basket;
@@ -18,6 +21,9 @@ class CheckoutServiceProvider extends ServiceProvider
         __DIR__.'/config/checkout.php', 'checkout'
     );
 
+    $this->app->register(EventServiceProvider::class);
+
+   
   }
 
   public function boot()
@@ -29,6 +35,7 @@ class CheckoutServiceProvider extends ServiceProvider
     $this->bootDirectives();
     $this->bootComponents();
     $this->bootPublishes();
+
 
     $this->loadViewsFrom(__DIR__.'/resources/views', 'checkout');
 
@@ -47,6 +54,15 @@ class CheckoutServiceProvider extends ServiceProvider
 
   }
 
+
+  public function bootListeners() {
+
+    Event::listen(
+        BasketUpdated::class,
+        [StripeBasketListener::class, 'handle']
+    );
+
+  }
 
 
 

@@ -36,6 +36,8 @@
             
         </table>    
 
+        <a href="/basket/clear">Clear Basket</a>
+
        
 @endsection
 
@@ -44,10 +46,25 @@
 @section('basket.sidebar')
 
 {{-- if the site requires a login to checkout, display a login  / register form which redirects back to the basket --}}
-@if(!@config('checkout.anonymous_checkout'))
+@if(!@config('checkout.anonymous_checkout') && !Auth::user())
+
+        <div class="sb_block">
+            
+            
+            <div class="">
+               
+                @include('auth.loginform', ['intro'=>'Please Login to continue your purchase', 'intended'=>request()->path()])
+
+            </div>
+
+
+        </div>
 
 @else
-{{-- otherwise, just show the checkout blocks --}}
+    {{-- otherwise (either logged in or anon-allowed,), just show the checkout blocks --}}
+
+    @include('checkout::payment.' . config('checkout.payment_provider'))
+
 
 @endif
 

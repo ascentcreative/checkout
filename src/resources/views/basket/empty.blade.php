@@ -4,39 +4,8 @@
 
 @section('basket.contentstable')
 
-        <table width="100%">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
+        <H2>Your basket is currently empty</H2>      
 
-            <tbody>
-
-                @foreach(basket()->items()->get() as $item)
-                <tr>
-                    <td> <A href="{{ $item->sellable->url }}">{{ $item->sellable->getItemName() }}</A> </td>
-                    <td> {{ $item->qty }} </td>
-                    <td> {{ $item->sellable->getItemPrice() }} </td>
-                </tr>
-                @endforeach
-
-            </tbody>
-
-            <tfoot>
-                <tr>
-                    <th></th>
-                    <th>Total:</th>
-                    <th>&pound;{{ basket()->total }}</th>
-                </tr>
-            </tfoot>
-
-            
-        </table>    
-
-       
 @endsection
 
 

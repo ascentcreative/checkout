@@ -8,4 +8,12 @@ interface Sellable {
 
     public function getItemName();
 
+    public function isPhysical();
+
+    public function getItemWeight();
+
+    public function isDownload();
+
+    public function getItemFile();
+
 }
