@@ -13,14 +13,11 @@
 
         function pollOrderConfirmation(uuid) {
             
-            console.log('polling for ' + uuid);
-
             $.get('/basket/pollorderconfirmation/' + uuid, function(data) {
 
                 if (data.status == 'confirmed') {
                     window.location.reload();
                 } 
-                console.log(data);
             });
 
         }
@@ -36,7 +33,9 @@
 
 @if($order->confirmed == 1)
 
-    {{ $order }}
+    <P>Your order has been confirmed.</P>
+
+    <P>(More detail to be included here, such as download links etc...)</P>
 
 @else
 

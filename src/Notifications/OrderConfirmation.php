@@ -42,9 +42,10 @@ class OrderConfirmation extends Notification
     {
         return (new MailMessage)
                     ->subject('Thank you for your order!')
-                    ->line("The introduction to the notification.")
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->line("Thank your for ordering from Essential Christian Songs")
+                    ->line("[INSERT TABLE OF ORDER DATA]")
+                    ->action('Download your files', url('/account'));
+                    //->line('Thank you for using our application!');
     }
 
     /**
