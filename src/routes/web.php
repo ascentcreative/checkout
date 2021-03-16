@@ -32,10 +32,20 @@ Route::middleware(['web'])->group(function () {
 
     });
 
+    /**
+     * 'API' routes:
+     */
+    Route::prefix('/checkout/api')->group(function() {
+
+        Route::get('/basket/{method}', [AscentCreative\Checkout\Controllers\API\BasketController::class, 'consume']);
+
+    });
     
 
 });
 
 /** outside web middleware to avoid CSRF clashes */
 Route::post('/stripe/webhook', [AscentCreative\Checkout\Controllers\StripeController::class, 'webhook']);
+
+
 

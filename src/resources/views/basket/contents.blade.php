@@ -38,6 +38,8 @@
 
         <a href="/basket/clear">Clear Basket</a>
 
+      
+
        
 @endsection
 

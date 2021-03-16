@@ -18,6 +18,8 @@ use AscentCreative\Checkout\Events\OrderConfirmed;
 class Basket extends OrderBase
 {
     use HasFactory;
+
+    public $consumable = ['countAll'];
     
     /*
     * As a basket is essentially a non-confirmed order, can we point this to the orders table.
@@ -36,16 +38,30 @@ class Basket extends OrderBase
 
     public function add(Sellable $sellable, $qty=1) {
 
+        // need to check if the item can be added
+        // i.e. if a download, can only add one at a time
+        // maybe there's a max per order...
+
+        // feels like this should be farmed out to the Sellable, 
+        // maybe with some form of configurable rules?
+
+        // but in principle (and as a v1) we just need to check and then return a response.
+
+        if ($sellable->isDownload() && $this->countOf($sellable) > 0) {
+            return false;  // or should we throw an exception to allow more granular handling?
+        }
+
         $item = new OrderItem();
-        //$item->sellable($sellable);
         $item->sellable_type = get_class($sellable);
         $item->sellable_id = $sellable->id;
         $item->qty = $qty;
         $this->addItem($item);
      
+        return true;
+
     }
 
-    public function addItem(OrderItem $item) {
+    private function addItem(OrderItem $item) {
        
         if (!$this->id) {
             $this->save();
@@ -65,7 +81,20 @@ class Basket extends OrderBase
     }
 
 
+    /**
+     * counts how many of this Sellable are in the basket:
+     */
+    public function countOf(Sellable $sellable) {
+        
+        return $this->items()->where('sellable_type', get_class($sellable))->where('sellable_id', $sellable->id)->sum('qty');
 
+    }
+
+    public function countAll() {
+
+        return $this->items()->sum('qty');
+
+    }
 
 
     public function confirmOrder() {

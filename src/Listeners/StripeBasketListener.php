@@ -45,7 +45,7 @@ class StripeBasketListener
             * Create a payment intent if there isn't already one in the session.
             */
             
-            echo 'creating intent';
+        //    echo 'creating intent';
 
             $intent = $stripe->paymentIntents->create([
                 'amount' => basket()->total * 100,
@@ -64,7 +64,7 @@ class StripeBasketListener
             */
 
             if (basket()->total > 0) {
-                echo 'updating intent';
+           //     echo 'updating intent';
 
                 $intent = session('checkout_paymentIntent');
 
