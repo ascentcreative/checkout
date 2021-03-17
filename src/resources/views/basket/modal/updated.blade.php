@@ -2,6 +2,10 @@
 
 @section('modalTitle', "Basket Updated")
 
+@php
+$modalShowFooter = true;
+@endphp
+
 @section('modalContent')
 
 <table width="100%">
