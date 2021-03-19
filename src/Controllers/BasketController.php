@@ -16,6 +16,8 @@ class BasketController extends Controller
    
     public function index() {
 
+      headTitle()->add("Your Basket");
+
       return view('checkout::basket.' . (basket()->isEmpty ? 'empty' : 'contents'));
 
     }
@@ -63,6 +65,8 @@ class BasketController extends Controller
      * Note: the webhook may not have been fired, so may need to return a holding status
      */
     public function orderconfirmed($uuid) {
+
+      headTitle()->add("Thank you for your order");
 
       $order = Order::where('uuid', $uuid)->first();
 
