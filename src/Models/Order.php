@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 use AscentCreative\Checkout\Contracts\Sellable;
 use AscentCreative\Checkout\Events\BasketUpdated;
 
+use AscentCreative\Checkout\Models\OrderItem;
+
 /**
  * A model to represent a confirmed order.
  */
@@ -28,6 +30,11 @@ class Order extends OrderBase
         static::addGlobalScope('order', function (Builder $builder) {
             $builder->where('confirmed', '=', '1');
         });
+        
+    }
+
+    public function items() {
+        return $this->hasMany(OrderItem::class);
     }
 
    
