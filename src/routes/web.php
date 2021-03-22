@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use AscentCreative\Checkout\Models\Basket;
 use AscentCreative\Checkout\Models\Order;
 
+use AscentCreative\Checkout\Controllers\Admin\OrderController;
+
 //Route::get('/basket', [AscentCreative\Checkout\Controllers\BasketController::class, 'index']);
 //Route::get('/basket', [App\Http\Controllers\BasketController::class, 'index']);
 
@@ -38,6 +40,14 @@ Route::middleware(['web'])->group(function () {
     Route::prefix('/checkout/api')->group(function() {
 
         Route::get('/basket/{method}', [AscentCreative\Checkout\Controllers\API\BasketController::class, 'consume']);
+
+    });
+
+
+    Route::prefix('/admin')->middleware(['auth', 'can:administer'])->group(function() {
+
+        Route::get('/orders/{order}/delete', [AscentCreative\Checkout\Controllers\Admin\OrderController::class, 'delete']);
+        Route::resource('/orders', OrderController::class);
 
     });
     
