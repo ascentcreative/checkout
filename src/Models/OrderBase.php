@@ -27,7 +27,7 @@ class OrderBase extends Base
     public function getTotalAttribute() {
         $total = 0;
         foreach($this->items()->get() as $item) {
-            $total += $item->sellable->getItemPrice() * $item->qty;
+            $total += $item->purchasePrice * $item->qty;
         }
         return $total;
     }

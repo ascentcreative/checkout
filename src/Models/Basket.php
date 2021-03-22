@@ -55,6 +55,8 @@ class Basket extends OrderBase
         $item->sellable_type = get_class($sellable);
         $item->sellable_id = $sellable->id;
         $item->qty = $qty;
+        $item->itemPrice = $sellable->getItemPrice();
+        $item->purchasePrice = $sellable->getItemPrice();
         $this->addItem($item);
      
         return true;
@@ -106,14 +108,6 @@ class Basket extends OrderBase
     }
 
 
-
-    public function getTotalAttribute() {
-        $total = 0;
-        foreach($this->items()->get() as $item) {
-            $total += $item->sellable->getItemPrice() * $item->qty;
-        }
-        return $total;
-    }
 
     public function getIsEmptyAttribute() {
         return $this->items()->count() == 0;

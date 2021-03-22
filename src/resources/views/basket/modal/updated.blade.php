@@ -23,7 +23,7 @@ $modalShowFooter = true;
         <tr>
             <td> <A href="{{ $item->sellable->url }}">{{ $item->sellable->getItemName() }}</A> </td>
             <td> {{ $item->qty }} </td>
-            <td> {{ $item->sellable->getItemPrice() }} </td>
+            <td> &pound;{{ number_format($item->purchasePrice, 2) }} </td>
         </tr>
         @endforeach
 
