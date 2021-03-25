@@ -7,6 +7,7 @@ use AscentCreative\Checkout\Models\Basket;
 use AscentCreative\Checkout\Models\Order;
 
 use AscentCreative\Checkout\Controllers\Admin\OrderController;
+use AscentCreative\Checkout\Notifications\OrderConfirmation;
 
 //Route::get('/basket', [AscentCreative\Checkout\Controllers\BasketController::class, 'index']);
 //Route::get('/basket', [App\Http\Controllers\BasketController::class, 'index']);
@@ -17,12 +18,30 @@ Route::middleware(['web'])->group(function () {
 
         Route::get('/basket', [AscentCreative\Checkout\Controllers\BasketController::class, 'index']);
         Route::get('/basket/clear', [AscentCreative\Checkout\Controllers\BasketController::class, 'clear']);
+        Route::get('/basket/remove/{uuid}/{qty?}', [AscentCreative\Checkout\Controllers\BasketController::class, 'remove']);
         Route::get('/basket/complete', [AscentCreative\Checkout\Controllers\BasketController::class, 'complete']);
         Route::get('/basket/orderconfirmed/{uuid}', [AscentCreative\Checkout\Controllers\BasketController::class, 'orderconfirmed']);
         Route::get('/basket/pollorderconfirmation/{uuid}', [AscentCreative\Checkout\Controllers\BasketController::class, 'pollorderconfirmation']);
            
     });
 
+
+    Route::middleware(['auth'])->group(function () {
+
+        Route::get('/checkout/orders', [AscentCreative\Checkout\Controllers\OrderController::class, 'index'])->name('checkout-all-orders');
+        Route::get('/checkout/orders/{order:uuid}', [AscentCreative\Checkout\Controllers\OrderController::class, 'show']);
+        Route::get('/checkout/orders/{order:uuid}/resend', function (Order $order) { 
+            Notification::send($order->customer, new OrderConfirmation($order));   
+        });
+
+        Route::get('/checkout/orders/{order:uuid}/testemail', function (Order $order) {
+
+            $mail = new OrderConfirmation($order);
+            return $mail->toMail('a@b.com');
+
+        });
+
+    });
 
     Route::get('/hooktest', function() {
 
