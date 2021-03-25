@@ -55,6 +55,7 @@ class Basket extends OrderBase
         $item->sellable_type = get_class($sellable);
         $item->sellable_id = $sellable->id;
         $item->qty = $qty;
+        $item->title = $sellable->getItemName();
         $item->itemPrice = $sellable->getItemPrice();
         $item->purchasePrice = $sellable->getItemPrice();
         $this->addItem($item);
@@ -82,6 +83,21 @@ class Basket extends OrderBase
 
     }
 
+    public function remove($uuid, $qty=null) {
+
+        $item = $this->items()->where('uuid', $uuid)->first();
+
+        if($item) {
+            $item->delete();
+        }
+        
+        BasketUpdated::dispatch($this);
+
+    }
+
+    public function removeItem(OrderItem $item, $qty) {
+        BasketUpdated::dispatch($this);
+    }
 
     /**
      * counts how many of this Sellable are in the basket:
@@ -101,6 +117,7 @@ class Basket extends OrderBase
 
     public function confirmOrder() {
         $this->confirmed = 1;
+        $this->confirmed_at = now(); //date_format(new DateTime(), 'Y-m-d H:i:s');
         $this->save();
 
         OrderConfirmed::dispatch($this);
