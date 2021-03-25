@@ -12,15 +12,11 @@ trait Customer {
     public function owns(Sellable $sellable) {
 
       return $this->orderItems()->where("sellable_type", get_class($sellable))->where("sellable_id", $sellable->id)->count() > 0;
-        
-        // ->whereHas('items', function($query) {
-        //     $query::where("sellable_type", get_class($sellable))->where("sellable_id", $sellable-id);
-        // });
 
     }
 
     public function orders() {
-        return $this->hasMany(Order::class);
+        return $this->morphMany(Order::class, 'customer')->with('items.sellable');
     }
 
     public function orderItems() {
