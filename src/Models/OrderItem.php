@@ -31,6 +31,18 @@ class OrderItem extends Base
             }
         });
     }
+
+    public function isPhysical() {
+        return $this->sellable->isPhysical();
+    }
+
+    public function isDownload() {
+        return $this->sellable->isDownload();
+    }
+
+    public function getDownloadUrl() {
+        return $this->sellable->getDownloadUrl();
+    }
     
 
 }
