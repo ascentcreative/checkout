@@ -6,14 +6,17 @@
   
         <tr>
             
-            <th width="">Order&nbsp;#</th>
+            <th class="text-nowrap" width="">Order&nbsp;#</th>
+
+            <th class="text-nowrap">Date</th>
 
             <th width="">Customer</th>
 
+            <th class="text-right">Items</th>
 
-            <th width="">Value</th>
+            <th class="text-right">Value</th>
 
-            <th></th>
+            {{-- <th></th> --}}
 
            
           
@@ -28,11 +31,15 @@
     
         <tr class="indexitem">
 
-            <td class="title" ><a href="{{ action([controller(), 'edit'], [$modelInject => $item->id]) }}">{{$item->id}}</a></td>
-            
-            <td class="title" width="100%">{{ $item->customer->name }}</td>
+            <td class="title text-nowrap"><a href="{{ action([controller(), 'show'], [$modelInject => $item->id]) }}">{{$item->orderNumber}}</a></td>
 
-            <td class="title" >&pound;{{$item->total}}</a></td>
+            <td class="title text-nowrap">{{ $item->formatOrderDate('d F Y, H:i') }}</td>
+            
+            <td class="title" xxwidth="100%">{{ $item->customer->name }}</td>
+
+            <td class="title text-right" xwidth="100%">{{ $item->items->count() }}</td>
+
+            <td class="title text-right" >&pound;{{$item->total}}</a></td>
 
             <td width="0" align="right" style="width: 0 !important"> 
                 <div class="btn-group dropleft">
