@@ -18,22 +18,37 @@ class BasketController extends Controller
 
       headTitle()->add("Your Basket");
 
-      return view('checkout::basket.' . (basket()->isEmpty ? 'empty' : 'contents'));
+      return view('checkout::basket.show');
 
     }
 
     /** user requested to empty the basket */
     public function clear() {
 
-      basket()->clear();
-      return redirect('/basket'); 
+        basket()->clear();
+
+        if (request()->wantsJson()) {
+            return view('checkout::basket.contents');
+        } else {
+            return redirect('/basket'); 
+        }
+
+      //return redirect('/basket'); 
 
     }
 
     /**
      * Take something out of the basket.
      */
-    public function remove($uuid, $qty) {
+    public function remove($uuid, $qty=null) {
+       
+        basket()->remove($uuid, $qty);
+
+        if (request()->wantsJson()) {
+            return view('checkout::basket.contents');
+        } else {
+            return redirect('/basket'); 
+        }
 
     }
 
