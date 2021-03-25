@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 
 use AscentCreative\Checkout\Models\Basket;
+use AscentCreative\Checkout\Models\Order;
+use AscentCreative\Checkout\Models\Transaction;
 
 class StripeController extends Controller
 {
@@ -40,9 +42,17 @@ class StripeController extends Controller
 
               if ($basket) { 
                 $basket->confirmOrder();
+                $order = Order::where('uuid', $basket->uuid)->first();
               } else {
                 return response()->json(['error' => 'Basket not found - may have already been confirmed.'],404);
               }
+
+              $t = new Transaction();
+              $t->data = $webhookContent; //$event;
+              $t->transactable()->associate($order);
+              $t->save();
+
+
 
                /*
                
