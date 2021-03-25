@@ -7,18 +7,23 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+use AscentCreative\Checkout\Models\Order;
+
 class OrderConfirmation extends Notification
 {
     use Queueable;
+
+    private $order;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Order $order)
     {
         //
+        $this->order = $order;
     }
 
     /**
@@ -41,10 +46,13 @@ class OrderConfirmation extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Thank you for your order!')
-                    ->line("Thank your for ordering from Essential Christian Songs")
+                    ->subject('Thank you for your order :: ' . $this->order->orderNumber)
+                    ->line("Thank you for ordering from Essential Christian Songs")
                     ->line("[INSERT TABLE OF ORDER DATA]")
-                    ->action('Download your files', url('/account'));
+                    ->markdown('checkout::order.markdown.items', [
+                         'order'=>$this->order
+                    ])
+                    ->action('Download your files', url($this->order->url));
                     //->line('Thank you for using our application!');
     }
 
