@@ -1,4 +1,4 @@
-@extends(config('checkout.global_blade')) 
+@extends(config('checkout.basket_blade')) 
 
 @section('basket.pagetitle', 'Thank you for your order')
 
@@ -33,9 +33,9 @@
 
 @if($order->confirmed == 1)
 
-    <P>Your order has been confirmed.</P>
+    <P>Your order has been confirmed{{ $order->hasDownloadItems() ? ' and your downloads are now available' :  '' }}.</P>
 
-    <P>(More detail to be included here, such as download links etc...)</P>
+    @include('checkout::order.details', ['order'=>$order]) 
 
 @else
 
