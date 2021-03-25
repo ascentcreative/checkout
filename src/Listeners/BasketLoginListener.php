@@ -29,8 +29,13 @@ class BasketLoginListener
     }
 
     /**
-     * Send API Request to Stripe to manage the payment intent
+     * Associate the basket with the current user
      *
+     * Also perform checks on the basket contents to ensure the user hasn't added things to the basket which they already own
+     * Not sure of the best way to inform the user at the moment... 
+     *  - A service like PUSHER would be ideal for sending the notification separately to the main request
+     *      but that's a lot of dev for a simple check...?
+     * 
      * @param  object  $event
      * @return void
      */
