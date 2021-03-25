@@ -12,7 +12,7 @@
                 base: {
                     backgroundColor: "#ffffff",
                     padding: '10px',
-                    fontFamily: 'Roboto, sans-serif'
+                    fontFamily: 'Montserrat, sans-serif'
                 }
             };
 
@@ -29,7 +29,7 @@
             });
 
             
-            $('BUTTON').click( function() {
+            $('BUTTON#stripe-submit').click( function() {
 
                //     alert('ok');
                     //return false;
@@ -78,7 +78,7 @@
 
 <div class="formpanel">
 
-    <x-cms-form-input type="text" name="cardholder" label="Cardholder Name" value="{{old('cardholder', '')}}" wrapper="simple">
+    <x-cms-form-input type="text" name="cardholder" id="cardholder" label="Cardholder Name" value="{{old('cardholder', '')}}" wrapper="simple">
         The name exactly as it appears on the card
     </x-cms-form-inpt>
 
@@ -87,7 +87,7 @@
     
     <div id="card-errors"></div>
 
-    <button>Pay now</button>
+    <button id="stripe-submit">Pay now</button>
 
     <div class="small p-2 mt-3 text-center">
         <p><a href="https://stripe.com" target="_blank"><img src="/img/stripe.svg" height="20" width="auto" alt="Powered by STRIPE" border="0"/></a></p>
