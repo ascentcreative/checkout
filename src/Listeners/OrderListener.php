@@ -37,6 +37,6 @@ class OrderListener
      */
     public function handleConfirmed(OrderConfirmed $event)
     {
-        Notification::send($event->order->customer, new OrderConfirmation());      
+        Notification::send($event->order->customer, new OrderConfirmation($event->order));      
     }
 }
