@@ -14,6 +14,6 @@ interface Sellable {
 
     public function isDownload();
 
-    public function getItemFile();
+    public function getDownloadUrl();
 
 }
