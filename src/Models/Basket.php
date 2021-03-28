@@ -114,6 +114,15 @@ class Basket extends OrderBase
 
     }
 
+    public function summary() {
+        $count = $this->countAll();
+
+        if($this->countAll() > 0) {
+            return $count . ' item' . ($count>1?'s':'') . ', &pound;' . number_format($this->total, 2);
+        } else {
+            return 'Basket: Empty';
+        }
+    }
 
     public function confirmOrder() {
         $this->confirmed = 1;
