@@ -19,7 +19,7 @@ class Basket extends OrderBase
 {
     use HasFactory;
 
-    public $consumable = ['countAll'];
+    public $consumable = ['countAll', 'summary'];
     
     /*
     * As a basket is essentially a non-confirmed order, can we point this to the orders table.
