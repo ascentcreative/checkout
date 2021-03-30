@@ -7,6 +7,7 @@ use AscentCreative\CMS\Controllers\AdminBaseController;
 use Illuminate\Http\Request;
 
 use Illuminate\Database\Eloquent\Model;
+use AscentCreative\CMS\Filters\DateFilter;
 
 class OrderController extends AdminBaseController
 {
@@ -22,6 +23,13 @@ class OrderController extends AdminBaseController
         ['confirmed_at', 'desc']
     ];
 
+    public function __construct() {
+        parent::__construct();
+
+        $this->registerFilters([
+            'fromDate' => new DateFilter('from', 'confirmed_at')
+        ]);
+    }
 
     public function rules($request, $model=null) {
 
