@@ -91,7 +91,7 @@
 
     <div class="small p-2 mt-3 text-center">
         <p><a href="https://stripe.com" target="_blank"><img src="/img/stripe.svg" height="20" width="auto" alt="Powered by STRIPE" border="0"/></a></p>
-        Your card details will be processed by Stripe. Essential Christian Songs do not have access to your payment details.
+        Your card details will be processed by Stripe. {{ config('app.name')}} will not have access to your full payment details.
     </div>
     {{-- session('checkout_paymentIntent') --}}
 
