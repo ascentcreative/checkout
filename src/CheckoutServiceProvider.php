@@ -18,7 +18,7 @@ class CheckoutServiceProvider extends ServiceProvider
   {
     //
     $this->mergeConfigFrom(
-        __DIR__.'/config/checkout.php', 'checkout'
+        __DIR__.'/../config/checkout.php', 'checkout'
     );
 
     $this->app->register(EventServiceProvider::class);
@@ -37,9 +37,9 @@ class CheckoutServiceProvider extends ServiceProvider
     $this->bootPublishes();
 
 
-    $this->loadViewsFrom(__DIR__.'/resources/views', 'checkout');
+    $this->loadViewsFrom(__DIR__.'/../resources/views', 'checkout');
 
-    $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+    $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
     $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     
