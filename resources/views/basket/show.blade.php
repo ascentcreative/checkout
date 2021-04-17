@@ -4,6 +4,9 @@
 
 @endpush
 
+
+@section('wrapper-class', 'basket')
+
 @section('basket.pagetitle', 'Your Basket')
 
 @section('basket.contentstable')
