@@ -24,7 +24,7 @@
             <td class="text-right">&pound;{{ number_format($item->purchasePrice, 2) }}</td>
             <td>
                 @if ($item->sellable->isDownload())
-                    <A href="{{ $item->getDownloadUrl() }}" class="bi-cloud-arrow-down-fill" style="font-size: 2rem; line-height: 1rem;" data-toggle="tooltip" title="Download File"></A>
+                    <A href="{{ $item->getDownloadUrl() }}" class="bi-cloud-arrow-down-fill modal-link" style="font-size: 2rem; line-height: 1rem;" data-toggle="tooltip" title="Download File"></A>
                 @endif
             </td>
         </tr>
