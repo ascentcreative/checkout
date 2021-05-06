@@ -1,7 +1,7 @@
 @push('scripts')
 <script>
 $(document).on('basketUpdated', function(e) {
-    console.log('update event captured');
+    
     $.get('/checkout/api/basket/summary')
     .done(function(data) {
         $('#checkout-basket-summary').html(data);
