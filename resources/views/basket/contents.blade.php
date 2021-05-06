@@ -8,7 +8,7 @@
     <thead>
         <tr>
             <th>Item</th>
-            <th>@if (basket()->hasPhysicalItems()) Qty @endif</th>
+            @if (basket()->hasPhysicalItems())<th> Qty </th>@endif
             <th class="text-right">Price</th>
             <th></th>
         </tr>
@@ -18,13 +18,17 @@
 
         @foreach(basket()->items()->get() as $item)
         <tr class='basket-item'>
+            
             <td width="100%"> <A href="{{ $item->sellable->url }}">{{ $item->sellable->getItemName() }}</A> </td>
             
-            <td> 
-                @if ($item->sellable->isPhysical())
-                    {{ $item->qty }} 
-                @endif
-            </td>
+            @if (basket()->hasPhysicalItems())
+                <td> 
+                    @if ($item->sellable->isPhysical())
+                        {{ $item->qty }} 
+                    @endif
+                </td>
+            @endif
+            
             <td class="text-right">&pound;{{ number_format($item->purchasePrice, 2) }}</td>
             <td><A href="/basket/remove/{{$item->uuid}}" class="bi-x-circle-fill ajax-link" data-response-target="#basket-contents"></A></td>
         </tr>
@@ -34,8 +38,11 @@
 
     <tfoot>
         <tr>
-            <th></th>
+            @if (basket()->hasPhysicalItems())
+                <th></th>
+            @endif
             <th class="text-right" >Total:</th>
+           
             <th class="text-right">&pound;{{ basket()->total }}</th>
             <th></th>
         </tr>
