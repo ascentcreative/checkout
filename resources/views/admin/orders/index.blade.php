@@ -39,7 +39,7 @@
 
             <td class="title text-right" xwidth="100%">{{ $item->items->count() }}</td>
 
-            <td class="title text-right" >&pound;{{$item->total}}</a></td>
+            <td class="title text-right" >&pound;{{ number_format($item->total, 2) }}</a></td>
 
             <td width="0" align="right" style="width: 0 !important"> 
                 <div class="btn-group dropleft">

@@ -67,9 +67,9 @@
 
             <tr>
                 <td>{{ $item->title }}</td>
-                <td class="text-right">&pound;{{ $item->purchasePrice }}</td>
+                <td class="text-right">&pound;{{ number_format($item->purchasePrice, 2) }}</td>
                 <td class="text-right">{{ $item->qty }}</td>
-                <td class="text-right">&pound;{{ $item->purchasePrice * $item->qty }}</td>
+                <td class="text-right">&pound;{{ number_format($item->purchasePrice * $item->qty, 2) }}</td>
             </tr>
 
             @endforeach
@@ -79,7 +79,7 @@
         <tfoot>
             <th colspan="2" class="text-right">Total:</th>
             <th class="text-right">{{ $model->totalQuantity }}</th>
-            <th class="text-right">&pound;{{ $model->total }}</th>
+            <th class="text-right">&pound;{{ number_format($model->total, 2) }}</th>
         </tfoot>
 
     </table>

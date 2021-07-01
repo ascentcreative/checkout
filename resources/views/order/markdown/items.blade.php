@@ -24,9 +24,9 @@ Thank you for your order from Essential Christian Songs.
 | Item |  |  |
 |:---- | -----:|--:|
 @foreach($order->items as $item)
-| {{ $item->sellable->getItemName() }} | &pound;{{ $item->purchasePrice}} | {{--[Download]({{ url($item->getDownloadUrl())}}) | --}}
+| {{ $item->sellable->getItemName() }} | &pound;{{ number_format($item->purchasePrice, 2) }} | {{--[Download]({{ url($item->getDownloadUrl())}}) | --}}
 @endforeach
-| **Total** | **£{{ $order->total }}** |
+| **Total** | **£{{ number_format($order->total, 2) }}** |
 @endcomponent
 
 @component('mail::button', ['url'=>url($order->url)])

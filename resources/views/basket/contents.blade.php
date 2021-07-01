@@ -43,7 +43,7 @@
             @endif
             <th class="text-right" >Total:</th>
            
-            <th class="text-right">&pound;{{ basket()->total }}</th>
+            <th class="text-right">&pound;{{ number_format(basket()->total, 2) }}</th>
             <th></th>
         </tr>
     </tfoot>
