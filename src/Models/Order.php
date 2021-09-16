@@ -91,7 +91,8 @@ class Order extends OrderBase
 
         $t = $this->transactions->first();
         if ($t) {
-            return json_decode($t->data)->id;
+            //return json_decode($t->data)->id;
+            return json_decode($t->data)->data->object->charges->data[0]->id;
         } else {
             return '';
         }
