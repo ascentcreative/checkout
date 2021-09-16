@@ -68,6 +68,43 @@ Route::middleware(['web'])->group(function () {
         Route::get('/orders/{order}/delete', [AscentCreative\Checkout\Controllers\Admin\OrderController::class, 'delete']);
         Route::resource('/orders', OrderController::class);
 
+        Route::get('/updateTransactions', function() {
+
+            $secret = config('checkout.stripe_secret_key');
+
+            $stripe = new \Stripe\StripeClient(
+                $secret
+                 );
+
+
+            foreach(AscentCreative\Checkout\Models\Transaction::all() as $trans) {
+
+                $bt_ref = json_decode($trans->data)->data->object->charges->data[0]->balance_transaction;
+
+
+                dump($bt_ref);
+
+                try {
+
+                 $bt = $stripe->balanceTransactions->retrieve(
+                    $bt_ref,
+                    []
+                );
+
+                $trans->amount = $bt->amount / 100;
+                $trans->fees = $bt->fee / 100;
+                $trans->nett = $bt->net / 100;
+
+                $trans->save();
+
+            } catch (Exception $e) {
+                dump($e);
+            }
+
+            }
+
+        });
+
     });
     
 

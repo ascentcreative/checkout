@@ -47,9 +47,29 @@ class StripeController extends Controller
                 return response()->json(['error' => 'Basket not found - may have already been confirmed.'],404);
               }
 
+             // \Log::info($event->data->object->charges->data[0]->balance_transaction);
+
+              $secret = config('checkout.stripe_secret_key');
+
+              $stripe = new \Stripe\StripeClient(
+                  $secret
+                   );
+
+              $bt = $stripe->balanceTransactions->retrieve(
+                'txn_1IUD0aHZw0ztnS0JMnBuUHdv',
+                []
+              );
+
+             // \Log::info("FEE: " . $bt->fee);
+
               $t = new Transaction();
               $t->data = $webhookContent; //$event;
               $t->transactable()->associate($order);
+
+              $t->amount = $bt->amount / 100;
+              $t->fees = $bt->fee / 100;
+              $t->nett = $bt->net / 100;
+
               $t->save();
 
 
