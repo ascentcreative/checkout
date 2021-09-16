@@ -68,6 +68,18 @@ Route::middleware(['web'])->group(function () {
         Route::get('/orders/{order}/delete', [AscentCreative\Checkout\Controllers\Admin\OrderController::class, 'delete']);
         Route::resource('/orders', OrderController::class);
 
+        Route::get('/allintents', function() {
+
+            $secret = config('checkout.stripe_secret_key');
+
+            $stripe = new \Stripe\StripeClient(
+                $secret
+                 );
+                
+            return ($stripe->paymentIntents->all());
+
+        });
+
         // Route::get('/updateTransactions', function() {
 
         //     $secret = config('checkout.stripe_secret_key');
