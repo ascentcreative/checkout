@@ -49,16 +49,6 @@ class StripeController extends Controller
 
              // \Log::info($event->data->object->charges->data[0]->balance_transaction);
 
-              $secret = config('checkout.stripe_secret_key');
-
-              $stripe = new \Stripe\StripeClient(
-                  $secret
-                   );
-
-              $bt = $stripe->balanceTransactions->retrieve(
-                'txn_1IUD0aHZw0ztnS0JMnBuUHdv',
-                []
-              );
 
              // \Log::info("FEE: " . $bt->fee);
 
@@ -66,13 +56,32 @@ class StripeController extends Controller
               $t->data = $webhookContent; //$event;
               $t->transactable()->associate($order);
 
+              $t->save();
+
+
+
+              try {
+
+              $secret = config('checkout.stripe_secret_key');
+
+              $stripe = new \Stripe\StripeClient(
+                  $secret
+                   );
+
+              $bt = $stripe->balanceTransactions->retrieve(
+                $event->data->object->charges->data[0]->balance_transaction,
+                []
+              );
+
               $t->amount = $bt->amount / 100;
               $t->fees = $bt->fee / 100;
               $t->nett = $bt->net / 100;
 
               $t->save();
 
-
+            } catch (Exception $e) {
+                \Log::error($e->getMessage());
+            }
 
                /*
                
