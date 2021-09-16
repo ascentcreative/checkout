@@ -15,6 +15,8 @@
             <th class="text-right">Items</th>
 
             <th class="text-right">Value</th>
+            <th class="text-right">Fees</th>
+            <th class="text-right">Nett</th>
 
             {{-- <th></th> --}}
 
@@ -40,6 +42,10 @@
             <td class="title text-right" xwidth="100%">{{ $item->items->count() }}</td>
 
             <td class="title text-right" >&pound;{{ number_format($item->total, 2) }}</a></td>
+
+            <td class="title text-right" >&pound;{{ number_format($item->fees, 2) }}</a></td>
+
+            <td class="title text-right" >&pound;{{ number_format($item->nett, 2) }}</a></td>
 
             <td width="0" align="right" style="width: 0 !important"> 
                 <div class="btn-group dropleft">

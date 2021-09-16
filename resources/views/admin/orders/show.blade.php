@@ -77,10 +77,28 @@
         </tbody>
 
         <tfoot>
-            <th colspan="2" class="text-right">Total:</th>
-            <th class="text-right">{{ $model->totalQuantity }}</th>
-            <th class="text-right">&pound;{{ number_format($model->total, 2) }}</th>
+
+            <tr>
+                <th colspan="2" class="text-right">Total:</th>
+                <th class="text-right">{{ $model->totalQuantity }}</th>
+                <th class="text-right">&pound;{{ number_format($model->total, 2) }}</th>
+            </tr>
+           
+            <tr>
+                <th colspan="2" class="text-right font-weight-normal">Fees:</th>
+                <th class="text-right"></th>
+                <th class="text-right font-weight-normal">&pound;{{ number_format($model->fees, 2) }}</th>
+            </tr>
+       
+            <tr>
+                <th colspan="2" class="text-right font-weight-normal">Nett:</th>
+                <th class="text-right font-weight-normal"></th>
+                <th class="text-right font-weight-normal">&pound;{{ number_format($model->nett, 2) }}</th>
+            </tr>
+
         </tfoot>
+
+
 
     </table>
 

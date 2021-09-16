@@ -100,6 +100,14 @@ class Order extends OrderBase
 
     }
 
+    public function getFeesAttribute() {
+        return $this->transactions->sum('fees');
+    }
+
+    public function getNettAttribute() {
+        return $this->transactions->sum('nett');
+    }
+
    
 
 }
