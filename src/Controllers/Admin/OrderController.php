@@ -25,10 +25,6 @@ class OrderController extends AdminBaseController
 
     public function __construct() {
         parent::__construct();
-
-        $this->registerFilters([
-            'fromDate' => new DateFilter('from', 'confirmed_at')
-        ]);
     }
 
     public function rules($request, $model=null) {
