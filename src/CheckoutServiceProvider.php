@@ -35,6 +35,7 @@ class CheckoutServiceProvider extends ServiceProvider
     $this->bootDirectives();
     $this->bootComponents();
     $this->bootPublishes();
+    $this->bootAssets();
 
 
     $this->loadViewsFrom(__DIR__.'/../resources/views', 'checkout');
@@ -50,7 +51,6 @@ class CheckoutServiceProvider extends ServiceProvider
 
     // Blade::component('project-element', 'AscentCreative\Projecct\View\Components\Element');
   
-
 
   }
 
@@ -72,6 +72,11 @@ class CheckoutServiceProvider extends ServiceProvider
     //
   }
 
+
+  public function bootAssets() {
+      app(\AscentCreative\CMS\Helpers\PackageAssets::class)
+        ->addStylesheet('/vendor/ascent/checkout/css/ascentcreative-checkout.css');
+  }
   
 
     public function bootPublishes() {
