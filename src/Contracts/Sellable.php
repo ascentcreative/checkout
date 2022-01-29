@@ -10,7 +10,7 @@ interface Sellable {
 
     public function isPhysical();
 
-    public function getItemWeight();
+    public function getItemWeight(); // maybe item weight should be a trait applied to weight-based products only?
 
     public function isDownload();
 
