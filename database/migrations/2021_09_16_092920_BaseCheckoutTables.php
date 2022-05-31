@@ -13,7 +13,7 @@ class BaseCheckoutTables extends Migration
      */
     public function up()
     {
-
+ 
         Schema::create('checkout_order_items', function(Blueprint $table) {
             $table->id();
             $table->string('uuid', 200)->index();
