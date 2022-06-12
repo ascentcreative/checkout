@@ -21,6 +21,7 @@
     }
 },
   "require": {
-    "stripe/stripe-php": "^7.75"
+    "ascentcreative/transact": "dev-dev",
+    "livewire/livewire": "^2.10"
   }
 }

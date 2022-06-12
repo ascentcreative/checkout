@@ -12,12 +12,15 @@ use AscentCreative\Checkout\Contracts\Sellable;
 use AscentCreative\Checkout\Events\BasketUpdated;
 use AscentCreative\Checkout\Events\OrderConfirmed;
 
+use AscentCreative\Transact\Contracts\iTransactable;
+use AscentCreative\Transact\Traits\Transactable;
+
 /**
  * A model to represent a customer's basket.
  */
-class Basket extends OrderBase
+class Basket extends OrderBase implements iTransactable
 {
-    use HasFactory;
+    use HasFactory, Transactable;
 
     public $consumable = ['countAll', 'summary'];
     
@@ -125,9 +128,17 @@ class Basket extends OrderBase
     }
 
     public function confirmOrder() {
+
         $this->confirmed = 1;
         $this->confirmed_at = now(); //date_format(new DateTime(), 'Y-m-d H:i:s');
         $this->save();
+
+        // repoint the transaction to the order model.
+        // (Thinking this split model idea was a mistake...)
+        $order = Order::find($this->id);
+        $txn = $this->transaction;
+        $txn->transactable()->associate($order);
+        $txn->save();
 
         OrderConfirmed::dispatch($this);
 
@@ -140,21 +151,14 @@ class Basket extends OrderBase
     }
 
 
-    public static function boot() {
-        parent::boot();
-        static::saving(function($model) {
-
-            $usr = Auth::user();
-
-            if($usr && is_null($model->customer)) {
-                $model->customer()->associate($usr);
-            }
-            
-            if(!$model->uuid) {
-                $model->uuid = Str::uuid();
-            }
-            
-        });
+    /* iTransactable */
+    public function getAmount():float {
+        return $this->total;
     }
+
+    public function onPaymentConfirmed() {
+        $this->confirmOrder();
+    }
+
 
 }

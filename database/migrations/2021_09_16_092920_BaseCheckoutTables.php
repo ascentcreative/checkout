@@ -13,38 +13,51 @@ class BaseCheckoutTables extends Migration
      */
     public function up()
     {
+
+        if(!Schema::hasTable('checkout_order_items')) {
  
-        Schema::create('checkout_order_items', function(Blueprint $table) {
-            $table->id();
-            $table->string('uuid', 200)->index();
-            $table->integer('order_id')->index();
-            $table->string('sellable_type')->index();
-            $table->integer('sellable_id')->index();
-            $table->integer('qty');
-            $table->float('itemPrice');
-            $table->float('purchasePrice');
-            $table->string('title');
-            $table->timestamps();
-        });
+            Schema::create('checkout_order_items', function(Blueprint $table) {
+                $table->id();
+                $table->string('uuid', 200)->index();
+                $table->integer('order_id')->index();
+                $table->string('sellable_type')->index();
+                $table->integer('sellable_id')->index();
+                $table->integer('qty');
+                $table->float('itemPrice');
+                $table->float('purchasePrice');
+                $table->string('title');
+                $table->timestamps();
+            });
 
-        Schema::create('checkout_orders', function(Blueprint $table) {
-            $table->id();
-            $table->string('uuid', 200)->index();
-            $table->string('customer_type')->index();
-            $table->integer('customer_id')->index();
-            $table->integer('confirmed');
-            $table->timestamp('confirmed_at');
-            $table->timestamps();
-        });
+        }
+        
+        if(!Schema::hasTable('checkout_orders')) {
 
-        Schema::create('checkout_transactions', function(Blueprint $table) {
-            $table->id();
-            $table->string('transactable_type')->index();
-            $table->integer('transactable_id')->index();
-            $table->float('amount');
-            $table->longtext('data');
-            $table->timestamps();
-        });
+            Schema::create('checkout_orders', function(Blueprint $table) {
+                $table->id();
+                $table->string('uuid', 200)->index();
+                $table->string('customer_type')->index();
+                $table->integer('customer_id')->index();
+                $table->integer('confirmed');
+                $table->timestamp('confirmed_at');
+                $table->timestamps();
+            });
+
+        }
+
+
+        if(!Schema::hasTable('checkout_transactions')) {
+
+            Schema::create('checkout_transactions', function(Blueprint $table) {
+                $table->id();
+                $table->string('transactable_type')->index();
+                $table->integer('transactable_id')->index();
+                $table->float('amount');
+                $table->longtext('data');
+                $table->timestamps();
+            });
+
+        }
         
     }
 

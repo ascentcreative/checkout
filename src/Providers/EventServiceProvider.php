@@ -41,15 +41,16 @@ class EventServiceProvider extends ServiceProvider
          * If we're using Stripe. register the listener to update the payment intents...
          * (Not registered in the array above as it's conditional)
          */
-        if(config('checkout.payment_provider') == 'stripe') {
+        // if(config('checkout.payment_provider') == 'stripe') {
 
-          //  echo 'reg';
-            Event::listen(
-                BasketUpdated::class,
-                [StripeBasketListener::class, 'handle']
-            );
+        //   //  echo 'reg';
+        //     Event::listen(
+        //         BasketUpdated::class,
+        //         [StripeBasketListener::class, 'handle']
+        //     );
     
-        } 
+        // } 
+        // ** DISABLED - functionality moved to Transact ** //
 
 
         Event::listen(

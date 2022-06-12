@@ -12,7 +12,8 @@ use AscentCreative\Checkout\Contracts\Sellable;
 use AscentCreative\Checkout\Events\BasketUpdated;
 
 use AscentCreative\Checkout\Models\OrderItem;
-use AscentCreative\Checkout\Models\Transaction;
+use AscentCreative\Transact\Models\Transaction;
+use AscentCreative\Transact\Traits\Transactable;
 
 use Carbon\Carbon;
 
@@ -21,7 +22,7 @@ use Carbon\Carbon;
  */
 class Order extends OrderBase
 {
-    use HasFactory;
+    use HasFactory, Transactable;
     
     /*
     * Uses a global scope to ensure we never include un-completed orders (baskets) when requesting orders

@@ -22,6 +22,10 @@ Route::middleware(['web'])->group(function () {
         Route::get('/basket/complete', [AscentCreative\Checkout\Controllers\BasketController::class, 'complete']);
         Route::get('/basket/orderconfirmed/{uuid}', [AscentCreative\Checkout\Controllers\BasketController::class, 'orderconfirmed']);
         Route::get('/basket/pollorderconfirmation/{uuid}', [AscentCreative\Checkout\Controllers\BasketController::class, 'pollorderconfirmation']);
+
+        Route::post('/basket/transact', function() {
+            return \AscentCreative\Transact\Transact::start(basket());
+        });
            
     });
 

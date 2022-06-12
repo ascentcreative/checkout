@@ -42,13 +42,72 @@
 
         @else
             {{-- otherwise (either logged in or anon-allowed,), just show the checkout blocks --}}
+            <div class="formpanel">
+                <x-transact-stripe-ui id="stripe-ui" />
+            </div>
 
-            @include('checkout::payment.' . config('checkout.payment_provider'))
-
+         
+           
+          
 
         @endif
 
     @endif
 
 @endsection
+
+
+
+@push('scripts')
+<SCRIPT>
+
+    // assign a function to the stripe UI.
+    // this will be run as a promise when the pay button is clicked.
+    // - for example, this could use AJAX to submit a form to save a record
+    // - it should then start a Transaction and return the payment intent.
+    // it is required to return the PaymentIntent
+     // the CS will then be passed to the .then chain to actually process the payment
+
+    $(document).ready(function() {
+        $('#stripe-ui').stripeui('setStartFunction', function(resolve, reject) {
+           
+            $.ajax({       
+                type: 'POST',
+                url: '/basket/transact',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                headers: {
+                    'Accept' : "application/json"
+                }
+             }).done(function(data, xhr, request) {
+                // resolve('force-fail');
+                resolve(data); // return the PaymentIntent
+             }).fail(function(data) {
+                reject(data.statusText);
+             });
+
+         });
+    });
+
+    $(document).on('transact-success', function() {
+        window.location = '/basket/complete';
+    });
+   
+
+
+    // a function to run when the payment completes
+//     $('stripe-ui').onSuccess() {
+
+//     }
+
+//     $('stripe-ui').onFail() {
+
+//      }
+   
+
+   
+
+</SCRIPT>
+@endpush
 
