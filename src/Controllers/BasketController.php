@@ -18,7 +18,11 @@ class BasketController extends Controller
 
       headTitle()->add("Your Basket");
 
-      return view('checkout::basket.show');
+      if(config('checkout.livewire_checkout')) {
+        return view('checkout::basket.livewire.show');
+      } else {
+        return view('checkout::basket.show');
+      }
 
     }
 

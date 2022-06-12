@@ -11,7 +11,9 @@ use AscentCreative\Checkout\Models\Basket;
 function basket() {
 	 
     if(!session()->has('checkout_basket')) {
-        session(['checkout_basket'=> new Basket()]);
+        $basket = new Basket();
+        // $basket->save();
+        session(['checkout_basket'=> $basket]);
     }
 
 	return session('checkout_basket');
