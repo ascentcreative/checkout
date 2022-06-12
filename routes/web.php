@@ -126,8 +126,4 @@ Route::middleware(['web'])->group(function () {
 
 });
 
-/** outside web middleware to avoid CSRF clashes */
-Route::post('/stripe/webhook', [AscentCreative\Checkout\Controllers\StripeController::class, 'webhook']);
-
-
 
