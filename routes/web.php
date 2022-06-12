@@ -69,6 +69,7 @@ Route::middleware(['web'])->group(function () {
 
     Route::prefix('/admin')->middleware(['auth', 'can:administer'])->group(function() {
 
+        Route::get('/orders/{order}/resendconfirmation', [AscentCreative\Checkout\Controllers\Admin\OrderController::class, 'resendConfirmation']);
         Route::get('/orders/{order}/resendnotification', [AscentCreative\Checkout\Controllers\Admin\OrderController::class, 'resendNotification']);
         Route::get('/orders/{order}/delete', [AscentCreative\Checkout\Controllers\Admin\OrderController::class, 'delete']);
         Route::resource('/orders', OrderController::class);
