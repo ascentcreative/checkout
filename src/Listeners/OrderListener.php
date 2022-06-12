@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Notification;
 
 use AscentCreative\Checkout\Events\OrderConfirmed;
 use AscentCreative\Checkout\Notifications\OrderConfirmation;
+use AscentCreative\Checkout\Notifications\OrderNotification;
+
+use Illuminate\Support\Facades\Log;
+
 /**
  * Listens for user login events.
  *  - Primarily just assigns the user id to the open basket
@@ -37,6 +41,26 @@ class OrderListener
      */
     public function handleConfirmed(OrderConfirmed $event)
     {
-        Notification::send($event->order->customer, new OrderConfirmation($event->order));      
+
+        try {
+     
+            Notification::send($event->order->customer, new OrderConfirmation($event->order));      
+            
+            $recips = config('checkout.order_notify');
+            if(!is_array($recips)) {
+                if ($recips == '') {
+                    return 'No recipients';
+                } else {
+                    $recips = [$recips];
+                }
+            }
+            
+            Notification::route("mail", $recips)
+                            ->notify(new OrderNotification($event->order));
+                        
+        } catch (\Exception $e) {
+            \Log::error('Error sending emails - ' . $e->getMessage);
+        }
+
     }
 }

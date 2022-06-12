@@ -14,4 +14,13 @@ return [
 
    
 
+
+    /** Email Settings */
+    //Blades
+    'order_confirmation' => 'checkout::order.markdown.confirmation',
+    'order_notification' => 'checkout::order.markdown.notification',
+
+    // Recipients:
+    'order_notify' => '',
+
 ];

@@ -3,7 +3,7 @@
 @slot('header')
 @component('mail::header', ['url' => config('app.url')])
 
-<IMG src="{{ asset('/img/ecsongs-emaillogo.png') }}" width="250" alt="Essential Christian Songs" />
+<IMG src="{{ asset(config('app.email_logo')) }}" width="250" alt="{{ config('app.name') }}" />
 
 @endcomponent
 @endslot
@@ -11,7 +11,7 @@
 {{-- Body --}}
 {{-- {{ $slot }} --}}
 
-Thank you for your order from Essential Christian Songs.
+Thank you for your order.
 
 @component('mail::table')
 |  | <!-- --> | 
@@ -29,11 +29,6 @@ Thank you for your order from Essential Christian Songs.
 | **Total** | **£{{ number_format($order->total, 2) }}** |
 @endcomponent
 
-@component('mail::button', ['url'=>url($order->url)])
-    Download your files
-@endcomponent
-
-
 
 
 
@@ -50,8 +45,6 @@ Thank you for your order from Essential Christian Songs.
 @slot('footer')
 @component('mail::footer')
 © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
-<BR/>
-Essential Christian, registered charity number 1126997, a company limited by guarantee, registered in England and Wales, number 06667924.
 @endcomponent
 @endslot
 @endcomponent
