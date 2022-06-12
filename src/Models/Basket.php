@@ -30,12 +30,51 @@ class Basket extends OrderBase implements iTransactable
     * This then means that basket events will only be fired by the Basket object etc.
     */
     public $table = "checkout_orders"; 
+
+    public static function boot() {
+        parent::boot();
+        static::saving(function($model) {
+
+            if(is_null($model->customer)) {
+
+                if(config('checkout.anonymous_checkout')) {
+                
+                    $customer = Customer::create([
+                    ]);
+                    $model->customer()->associate($customer);
+
+                } else {
+                    // link the order to the user
+
+                    $usr = Auth::user();
+
+                    if($usr) {
+                        $model->customer()->associate($usr);
+                    }
+                
+                }
+
+            }
+
+             
+            if(!$model->uuid) {
+                $model->uuid = Str::uuid();
+            }
+
+            
+        });
+    }
+
    
     protected static function booted()
     {
         static::addGlobalScope('basket', function (Builder $builder) {
             $builder->where('confirmed', '!=', '1')->orWhereNull('confirmed');
         });
+    }
+
+    public function customer() {
+        return $this->morphTo();
     }
 
 
@@ -83,6 +122,7 @@ class Basket extends OrderBase implements iTransactable
 
         $this->items()->delete();
         BasketUpdated::dispatch($this);
+        session()->pull('checkout_basket');
 
     }
 
