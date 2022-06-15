@@ -18,6 +18,7 @@ class OrderItem extends Base
     use HasFactory;
 
     public $table = 'checkout_order_items';
+    public $fillable = ['order_id', 'sellable_type', 'sellable_id', 'sku', 'qty', 'itemPrice', 'purchasePrice', 'title'];
 
     public function sellable() {
         return $this->morphTo();

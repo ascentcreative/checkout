@@ -78,7 +78,7 @@ class Basket extends OrderBase implements iTransactable
     }
 
 
-    public function add(Sellable $sellable, $qty=1) {
+    public function add(Sellable $sellable, $qty=1, $sku=null) {
 
         // need to check if the item can be added
         // i.e. if a download, can only add one at a time
@@ -93,14 +93,34 @@ class Basket extends OrderBase implements iTransactable
             return false;  // or should we throw an exception to allow more granular handling?
         }
 
-        $item = new OrderItem();
-        $item->sellable_type = get_class($sellable);
-        $item->sellable_id = $sellable->id;
-        $item->qty = $qty;
-        $item->title = $sellable->getItemName();
-        $item->itemPrice = $sellable->getItemPrice();
-        $item->purchasePrice = $sellable->getItemPrice();
-        $this->addItem($item);
+        if (is_null($sku)) {
+            $sku = get_class($sellable) . '_' . $sellable->id;
+        } 
+
+        $item = OrderItem::updateOrCreate([
+            'order_id' => $this->id,
+            'sellable_type' => get_class($sellable),
+            'sellable_id' => $sellable->id,
+            'sku' => $sku,
+        ], [
+            'title' => $sellable->getItemName(),
+            'itemPrice' => $sellable->getItemPrice(),
+            'purchasePrice' => $sellable->getItemPrice(),
+            'qty' => 0,
+        ]);
+
+        $item->increment('qty', $qty);
+
+
+        // $item = new OrderItem();
+        // $item->sellable_type = get_class($sellable);
+        // $item->sellable_id
+        // $item->sku = $sku;
+        // $item->qty = $qty;
+        // $item->title = $sellable->getItemName();
+        // $item->itemPrice = $sellable->getItemPrice();
+        // $item->purchasePrice = $sellable->getItemPrice();
+        // $this->addItem($item);
      
         return true;
 
