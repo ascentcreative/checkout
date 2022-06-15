@@ -12,7 +12,7 @@ function basket() {
 	 
     if(!session()->has('checkout_basket')) {
         $basket = new Basket();
-        // $basket->save();
+        $basket->save();
         session(['checkout_basket'=> $basket]);
     }
 
