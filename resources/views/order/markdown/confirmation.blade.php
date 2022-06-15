@@ -21,12 +21,12 @@ Thank you for your order.
 @endcomponent
 
 @component('mail::table')
-| Item |  |  |
-|:---- | -----:|--:|
+| Item | Price | Qty | Total |
+|:---- | -----:|--:|--:|--:|
 @foreach($order->items as $item)
-| {{ $item->sellable->getItemName() }} | &pound;{{ number_format($item->purchasePrice, 2) }} | {{--[Download]({{ url($item->getDownloadUrl())}}) | --}}
+| {{ $item->sellable->getItemName() }} | &pound;{{ number_format($item->purchasePrice, 2) }} | {{ $item->qty }} | &pound;{{ number_format($item->qty * $item->purchasePrice, 2) }} |
 @endforeach
-| **Total** | **£{{ number_format($order->total, 2) }}** |
+| **Total** |  |  | **£{{ number_format($order->total, 2) }}** |
 @endcomponent
 
 
