@@ -212,11 +212,11 @@ class Basket extends OrderBase implements iTransactable
 
 
     /* iTransactable */
-    public function getAmount():float {
+    public function getTransactionAmount():float {
         return $this->total;
     }
 
-    public function onPaymentConfirmed() {
+    public function onTransactionComplete() {
         $this->confirmOrder();
     }
 
