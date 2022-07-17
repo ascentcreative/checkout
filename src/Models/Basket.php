@@ -132,31 +132,35 @@ class Basket extends OrderBase implements iTransactable
            $sku = $sellable->sku ?? (get_class($sellable) . '_' . $sellable->id);
         } 
 
-        $item = OrderItem::firstOrCreate([
-            'order_id' => $this->id,
-            'sellable_type' => get_class($sellable),
-            'sellable_id' => $sellable->id,
-            'sku' => $sku,
-        ], [
-            'title' => $sellable->getItemName(),
-            'itemPrice' => $sellable->getItemPrice(),
-            'purchasePrice' => $sellable->getItemPrice(),
-            'qty' => 0,
-        ]);
+        // $item = OrderItem::firstOrCreate([
+        //     'order_id' => $this->id,
+        //     'sellable_type' => get_class($sellable),
+        //     'sellable_id' => $sellable->id,
+        //     'sku' => $sku,
+        // ], [
+        //     'title' => $sellable->getItemName(),
+        //     'itemPrice' => $sellable->getItemPrice(),
+        //     'itemPrice' => $sellable->getItemPrice(),
+        //     'qty' => 0,
+        // ]);
 
-        $item->increment('qty', $qty);
+        // $item->increment('qty', $qty);
 
+        for ($i = 0; $i < $qty; $i++) {
     
-        // $item = new OrderItem();
-        // $item->sellable_type = get_class($sellable);
-        // $item->sellable_id
-        // $item->sku = $sku;
-        // $item->qty = $qty;
-        // $item->title = $sellable->getItemName();
-        // $item->itemPrice = $sellable->getItemPrice();
-        // $item->purchasePrice = $sellable->getItemPrice();
-        // $this->addItem($item);
+            $item = new OrderItem();
+            $item->sellable_type = get_class($sellable);
+            $item->sellable_id = $sellable->id;
+            $item->sku = $sku;
+            $item->qty = 1;
+            $item->title = $sellable->getItemName();
+            $item->itemPrice = $sellable->getItemPrice();
+            $this->addItem($item);
+
+        }
      
+        BasketUpdated::dispatch($this);
+
         return true;
 
     }
@@ -198,6 +202,13 @@ class Basket extends OrderBase implements iTransactable
         
         BasketUpdated::dispatch($this);
 
+    }
+
+    public function removeByKey($key) {
+        $items = $this->items()->get()->where('group_key', $key)->each(function ($item) {
+            $item->delete();
+        });
+        BasketUpdated::dispatch($this);
     }
 
     public function removeItem(OrderItem $item, $qty) {

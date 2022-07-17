@@ -24,7 +24,7 @@ Thank you for your order.
 | Item | Price | Qty | Total |
 |:---- | -----:|--:|--:|--:|
 @foreach($order->items as $item)
-| {{ $item->sellable->getItemName() }} | &pound;{{ number_format($item->purchasePrice, 2) }} | {{ $item->qty }} | &pound;{{ number_format($item->qty * $item->purchasePrice, 2) }} |
+| {{ $item->sellable->getItemName() }} | &pound;{{ number_format($item->itemPrice, 2) }} | {{ $item->qty }} | &pound;{{ number_format($item->qty * $item->itemPrice, 2) }} |
 @endforeach
 | **Total** |  |  | **£{{ number_format($order->total, 2) }}** |
 @endcomponent

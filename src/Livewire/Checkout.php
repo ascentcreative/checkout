@@ -129,6 +129,10 @@ class Checkout extends Component
         basket()->remove($uuid);
     }
 
+    public function removeByKey($key) {
+        basket()->removeByKey($key);
+    }
+
     public function render()
     {
         return view('checkout::livewire.checkout');

@@ -18,7 +18,7 @@ class OrderItem extends Base
     use HasFactory;
 
     public $table = 'checkout_order_items';
-    public $fillable = ['order_id', 'sellable_type', 'sellable_id', 'sku', 'qty', 'itemPrice', 'purchasePrice', 'title'];
+    public $fillable = ['order_id', 'sellable_type', 'sellable_id', 'sku', 'qty', 'itemPrice', 'title'];
 
     public function sellable() {
         return $this->morphTo();
@@ -50,7 +50,7 @@ class OrderItem extends Base
     }
 
     public function getTotalPriceAttribute() {
-        return $this->purchasePrice * $this->qty;
+        return $this->itemPrice * $this->qty;
     }
 
     public function getFeesAttribute() {
@@ -110,6 +110,20 @@ class OrderItem extends Base
     public function getPriceNettOfFeesAttribute() {
         return $this->totalPrice - $this->fees;
     }
+
+    public function getGroupKeyAttribute() {
+        $array = [
+            $this->sku,
+            $this->offer_id,
+            $this->itemPrice
+        ];
+        return join('_', $array);
+    }
+
+    public function getMorphKeyAttribute() {
+        return morphKey($this, 'sellable');
+    }
     
 
 }
+ 

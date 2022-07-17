@@ -27,7 +27,7 @@ You've got a new order!
 | Item |  |  |
 |:---- | -----:|--:|
 @foreach($order->items as $item)
-| {{ $item->sellable->getItemName() }} | &pound;{{ number_format($item->purchasePrice, 2) }} | {{--[Download]({{ url($item->getDownloadUrl())}}) | --}}
+| {{ $item->sellable->getItemName() }} | &pound;{{ number_format($item->itemPrice, 2) }} | {{--[Download]({{ url($item->getDownloadUrl())}}) | --}}
 @endforeach
 | **Total** | **£{{ number_format($order->total, 2) }}** |
 @endcomponent

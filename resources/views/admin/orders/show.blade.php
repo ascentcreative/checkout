@@ -67,9 +67,9 @@
 
             <tr>
                 <td>{{ $item->title }}</td>
-                <td class="text-right">&pound;{{ number_format($item->purchasePrice, 2) }}</td>
+                <td class="text-right">&pound;{{ number_format($item->itemPrice, 2) }}</td>
                 <td class="text-right">{{ $item->qty }}</td>
-                <td class="text-right">&pound;{{ number_format($item->purchasePrice * $item->qty, 2) }}</td>
+                <td class="text-right">&pound;{{ number_format($item->itemPrice * $item->qty, 2) }}</td>
             </tr>
 
             @endforeach
