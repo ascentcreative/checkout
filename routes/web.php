@@ -9,10 +9,24 @@ use AscentCreative\Checkout\Models\Order;
 use AscentCreative\Checkout\Controllers\Admin\OrderController;
 use AscentCreative\Checkout\Notifications\OrderConfirmation;
 
+use AscentCreative\Checkout\Facades\ShippingCalculator;
+
 //Route::get('/basket', [AscentCreative\Checkout\Controllers\BasketController::class, 'index']);
 //Route::get('/basket', [App\Http\Controllers\BasketController::class, 'index']);
 
 Route::middleware(['web'])->group(function () {
+
+    Route::get('/basket/add', function() {
+        
+    })->name('basket.add');
+
+
+    Route::get('/shippingtest', function() {
+
+        return ShippingCalculator::calculateShipping();
+
+    });
+
 
     Route::middleware(['cms-nocache'])->group(function() {
 
@@ -86,42 +100,7 @@ Route::middleware(['web'])->group(function () {
 
         });
 
-        // Route::get('/updateTransactions', function() {
-
-        //     $secret = config('checkout.stripe_secret_key');
-
-        //     $stripe = new \Stripe\StripeClient(
-        //         $secret
-        //          );
-
-
-        //     foreach(AscentCreative\Checkout\Models\Transaction::all() as $trans) {
-
-        //         $bt_ref = json_decode($trans->data)->data->object->charges->data[0]->balance_transaction;
-
-
-        //         dump($bt_ref);
-
-        //         try {
-
-        //          $bt = $stripe->balanceTransactions->retrieve(
-        //             $bt_ref,
-        //             []
-        //         );
-
-        //         $trans->amount = $bt->amount / 100;
-        //         $trans->fees = $bt->fee / 100;
-        //         $trans->nett = $bt->net / 100;
-
-        //         $trans->save();
-
-        //     } catch (Exception $e) {
-        //         dump($e);
-        //     }
-
-        //     }
-
-        // });
+      
 
     });
     

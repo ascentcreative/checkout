@@ -11,9 +11,14 @@ use AscentCreative\Checkout\Models\Basket;
 function basket() {
 	 
     if(!session()->has('checkout_basket')) {
+        // throw new Exception('CREATING BASKET');
         $basket = new Basket();
-        $basket->save();
+        // $basket->save();
         session(['checkout_basket'=> $basket]);
+    } else {
+        // check if the basket is now an order, and bin if needed.
+
+        // dump(session('checkout_basket')->is_confirmed);
     }
 
 	return session('checkout_basket');

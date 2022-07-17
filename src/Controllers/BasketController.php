@@ -69,13 +69,15 @@ class BasketController extends Controller
         // if the order has been created (by the webhook/IPN)
         // display ordered items with links to download. 
 
-        $basket = session()->pull('checkout_basket');
-        session()->pull('checkout_paymentIntent');
- 
+
+        $uuid = basket()->uuid;
+        session()->pull('checkout_basket');
+       
+
         // redirect to view the order
         // note that the order may not yet be confirmed, so view may need to handle the period between the payment and the webhook.
         // $order = Order::where('uuid', $basket->uuid);
-        return redirect('/basket/orderconfirmed/' . $basket->uuid); //->view('checkout::basket.complete')->with('order', $order);
+        return redirect('/basket/orderconfirmed/' . $uuid); //->view('checkout::basket.complete')->with('order', $order);
 
     }
 
@@ -84,6 +86,8 @@ class BasketController extends Controller
      * Note: the webhook may not have been fired, so may need to return a holding status
      */
     public function orderconfirmed($uuid) {
+
+      session()->pull('checkout_basket');
 
       headTitle()->add("Thank you for your order");
 

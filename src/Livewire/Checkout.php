@@ -5,10 +5,17 @@ namespace AscentCreative\Checkout\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Support\Arr;
+
+use AscentCreative\Checkout\Models\Shipping\Service;
+
 class Checkout extends Component
 {
 
     public $current_tab = 'details';
+// 
+    // public $current_tab = 'shipping';
+    
 
     public $tab_status = [
         'details'=>'incomplete',
@@ -16,7 +23,17 @@ class Checkout extends Component
         'payment'=>'incomplete'
     ];
 
-    public $country;
+    public $country = ''; //1188';;
+    public $shipping_service = null;
+
+    public $country_id;
+
+    public $address = [
+        'country_id'=>null,
+    ];
+
+
+    protected $listeners = ['setShippingService'];
 
     public function mount() {
         if(!basket()->hasPhysicalItems()) {
@@ -33,18 +50,64 @@ class Checkout extends Component
         ])->validate();
 
         // populate info on basket:
-        basket()->customer->name = $data['name'];
-        basket()->customer->email = $data['email'];
-        basket()->customer->save();
-
+        if(!basket()->customer instanceof \App\Models\User) {
+            basket()->customer->name = $data['name'];
+            basket()->customer->email = $data['email'];
+            basket()->customer->save();
+        }
         // set the next tab:
         $this->tab_status['details'] = 'complete';
 
-        $this->current_tab = 'payment';
+        $this->current_tab = 'shipping';
+
+    }
+
+    public function setShippingCountry($data) {
+       
+        $this->country = $data;
+        // dump(basket()->id);
+        // dump(basket()->address);
+        basket()->address->country_id = $data;
+        basket()->address->save();
+
+    }
+
+    public function setShippingService($svc) {
+        // dump($svc);
+        basket()->shipping_service()->associate(Service::find($svc));
+        basket()->save();
 
     }
 
     public function setShipping($data) {
+      
+        foreach ($data as $key => $value) {
+            $key = str_replace(['[', ']'], ['.',''], $key);
+            Arr::set($data, $key, $value);
+        }
+
+        $rules = [
+            'address.country_id'=>'required',
+            'shipping_service_id'=>'required'
+        ];
+
+        if(basket()->needs_address) {
+
+            $rules = array_merge(
+                $rules,
+                [
+                    'address.street1'=>'required'
+                ]
+                );
+
+        }
+
+         // validate:
+         Validator::make($data,$rules)->validate();
+
+        basket()->address->fill($data['address']);
+        basket()->address->save();
+        
 
         // set the next tab:
         $this->tab_status['shipping'] = 'complete';

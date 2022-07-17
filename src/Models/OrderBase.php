@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Support\Str;
 
-Use AscentCreative\Checkout\Models\Baase;
+Use AscentCreative\Checkout\Models\Base;
+Use AscentCreative\Checkout\Models\Shipping\Service;
+Use AscentCreative\Geo\Traits\HasAddress;
 
 
 class OrderBase extends Base
@@ -23,11 +25,16 @@ class OrderBase extends Base
         return $this->morphTo();
     }
 
+
+    public function shipping_service() {
+        return $this->belongsTo(Service::class); //, 'id', 'shipping_service_id');
+    }
+
     public function getTotalQuantityAttribute() {
         return $this->items()->sum('qty');
     }
 
-    public function getTotalAttribute() {
+    public function getItemTotalAttribute() {
         $total = 0;
         foreach($this->items()->get() as $item) {
             $total += $item->purchasePrice * $item->qty;
@@ -35,6 +42,14 @@ class OrderBase extends Base
         return $total;
     }
 
+    public function getTotalAttribute() {
+        $total = 0;
+        $total += $this->itemTotal;
+        if($this->shipping_service) {
+            $total += $this->shipping_service->getCost($this);
+        }
+        return $total;
+    }
 
     public function hasPhysicalItems() {
         
@@ -50,6 +65,15 @@ class OrderBase extends Base
 
     }
 
+    public function getNeedsAddressAttribute() {
+        
+        return $this->hasPhysicalItems()
+                && !is_null($svc = $this->shipping_service)
+                && $svc->is_collection == 0;
+      
+    }
+
+
     public function hasDownloadItems() {
 
         foreach($this->items()->with('sellable')->get() as $item) {
@@ -64,6 +88,18 @@ class OrderBase extends Base
 
     }
 
+
+
+    public function getTotalWeight() {
+
+        $ttl = 0;
+
+        foreach($this->items()->with('sellable')->get() as $item) {
+            $ttl += $item->sellable->itemWeight * $item->qty;
+        }
+
+        return $ttl;
+    }
     
 
 }

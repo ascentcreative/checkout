@@ -12,15 +12,21 @@ use AscentCreative\Checkout\Contracts\Sellable;
 use AscentCreative\Checkout\Events\BasketUpdated;
 use AscentCreative\Checkout\Events\OrderConfirmed;
 
+use AscentCreative\Checkout\Models\Shipping\Service;
+
 use AscentCreative\Transact\Contracts\iTransactable;
 use AscentCreative\Transact\Traits\Transactable;
+
+use AscentCreative\Geo\Traits\HasAddress;
 
 /**
  * A model to represent a customer's basket.
  */
 class Basket extends OrderBase implements iTransactable
 {
-    use HasFactory, Transactable;
+    use HasFactory, 
+    // HasAddress,
+     Transactable;
 
     public $consumable = ['countAll', 'summary'];
     
@@ -63,7 +69,31 @@ class Basket extends OrderBase implements iTransactable
 
             
         });
+
+        static::saved(function($model) {
+
+            if(is_null($model->address)) {
+                $addr = \AscentCreative\Geo\Models\Address::create([
+                    'addressable_type' => get_class($model),
+                    'addressable_id' => $model->id
+                ]);
+                $model->address = $addr;
+            }
+
+        });
     }
+
+    /* define the relationship */
+    public function address() {
+    
+        return $this->morphOne(\AscentCreative\Geo\Models\Address::class, 'addressable');
+
+        // if($type) {
+        //     $q = $q->where('address_type', $type);
+        // }
+
+        // return $q;
+     }
 
    
     protected static function booted()
@@ -80,6 +110,10 @@ class Basket extends OrderBase implements iTransactable
 
     public function add(Sellable $sellable, $qty=1, $sku=null) {
 
+        if (!$this->id) {
+            $this->save();
+        }
+
         // need to check if the item can be added
         // i.e. if a download, can only add one at a time
         // maybe there's a max per order...
@@ -90,14 +124,15 @@ class Basket extends OrderBase implements iTransactable
         // but in principle (and as a v1) we just need to check and then return a response.
 
         if ($sellable->isDownload() && $this->countOf($sellable) > 0) {
+            return 'Download catch';
             return false;  // or should we throw an exception to allow more granular handling?
         }
 
-        if (is_null($sku)) {
-            $sku = get_class($sellable) . '_' . $sellable->id;
+        if (is_null($sku)) { 
+           $sku = $sellable->sku ?? (get_class($sellable) . '_' . $sellable->id);
         } 
 
-        $item = OrderItem::updateOrCreate([
+        $item = OrderItem::firstOrCreate([
             'order_id' => $this->id,
             'sellable_type' => get_class($sellable),
             'sellable_id' => $sellable->id,
@@ -111,7 +146,7 @@ class Basket extends OrderBase implements iTransactable
 
         $item->increment('qty', $qty);
 
-
+    
         // $item = new OrderItem();
         // $item->sellable_type = get_class($sellable);
         // $item->sellable_id
@@ -141,8 +176,15 @@ class Basket extends OrderBase implements iTransactable
     public function clear() {
 
         $this->items()->delete();
+   
+        if($this->customer instanceof \AscentCreative\Checkout\Models\Customer) {
+            $this->customer()->delete();
+        }
+        $this->address()->delete();
+
         BasketUpdated::dispatch($this);
         session()->pull('checkout_basket');
+        $this->delete();
 
     }
 
@@ -193,12 +235,17 @@ class Basket extends OrderBase implements iTransactable
         $this->confirmed_at = now(); //date_format(new DateTime(), 'Y-m-d H:i:s');
         $this->save();
 
-        // repoint the transaction to the order model.
-        // (Thinking this split model idea was a mistake...)
+        // // repoint the transaction to the order model.
+        // // (Thinking this split model idea was a mistake...)
         $order = Order::find($this->id);
         $txn = $this->transaction;
         $txn->transactable()->associate($order);
         $txn->save();
+
+        // do the same for the address:
+        $addr = $this->address;
+        $addr->addressable()->associate($order);
+        $addr->save();
 
         OrderConfirmed::dispatch($this);
 
@@ -210,6 +257,15 @@ class Basket extends OrderBase implements iTransactable
         return $this->items()->count() == 0;
     }
 
+    public function getShippingQuotes($country) {
+
+
+        // dd(Service::forCountry($country)->get()->whereNotNull('cost'));
+
+        return Service::forCountry($country)->get()->whereNotNull('cost');; //ll(); //append('cost')->get();
+
+    }
+
 
     /* iTransactable */
     public function getTransactionAmount():float {
@@ -219,6 +275,8 @@ class Basket extends OrderBase implements iTransactable
     public function onTransactionComplete() {
         $this->confirmOrder();
     }
+
+
 
 
 }
