@@ -17,14 +17,16 @@ class BasketUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $basket;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\AscentCreative\Checkout\Models\Basket $basket)
     {
-            
+        $this->basket = $basket;
     }
 
     /**
