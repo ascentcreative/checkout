@@ -46,10 +46,78 @@ class CheckoutServiceProvider extends ServiceProvider
   public function registerRouteMacros() {
 
     \Illuminate\Support\Facades\Route::macro('basket', function($segment, $class, $return = null) {
+
+
+
+            // Also
+            // how do we add product options to the basket?
+            // - Is the combination defined by the SKU?
+            // - or does the SKU point to the product only and we pass in an array of additional options in the request, 
+            //      which are then saved as attributes to the item? (JSON? Child Table?)
+
+            // Some of this may depend on whether the product has defined variants (combination of option values)
+            // or if it's a free for all (user selection). 
+            // - Defined variant could/should have SKU, and would be added as a direct addition to the basket
+            // - option bag as attributes in the URL. 
+
+            // Physical VS Download
+            // Is this just an option? Maybe specified as such in the add
+            // But it might affect the operation of the system (i.e. delivery method / costs) so is more universal than just "what colour"
+            // Still pass in a flag (download / physical) as above
+            // But perhaps stored as flag on order item, rather than elsewhere.
+
+            // so - product can still have phys/digi options on admin form.
+
+            // if format not specified, check product. Throw error if both formats allowed.
+
+
+         // Maybe the quantity, like the format, should be a special attribute, so that options / variants can also be supplied.
+        //  Route::get('/basket/add/' . $segment . '/{sku}/qty/{qty}', function($sku, $qty) use ($class, $return) {
+            
+        //     dd($qty);
+
+        //     $item = $class::where('sku', $sku)->first();
+        //     if($item) {
+        //         basket()->add($item, $qty);
+        //         if ($return) {
+        //             // customised return
+        //             // - allow both a string (URI), or a callback Closure
+        //         } else {
+        //             return redirect()->back();
+        //         }
+
+        //     } else {
+        //         abort(404);
+        //     }
+
+        // })->name($segment . '.basket.add.qty');
+
             
         // dd($segment.'.approval.recall');
-        Route::get('/basket/add/' . $segment . '/{sku}', function($sku) use ($class, $return) {
-            
+        Route::get('/basket/add/' . $segment . '/{sku}/{options?}', function($sku, $options=null) use ($class, $return) {
+
+            if(is_null($options)) {
+                $options = request()->all();
+            } else {
+                $split = explode('/', $options);
+                $options = [];
+                for($i=0; $i < count($split); $i = $i+2) {
+                    $options[$split[$i]] = $split[$i+1] ?? null;
+                }
+            }
+          
+            if (isset($options['format'])) {
+                $format = $options['format'];
+                unset($options['format']);
+            }
+
+            if (isset($options['qty'])) {
+                $qty = $options['qty'];
+                unset($options['qty']);
+            } else {
+                $qty = 1;
+            }
+
             $object = new $class();
 
             // some items may not have an sku column, but may need to resolve it via their own method
@@ -65,14 +133,20 @@ class CheckoutServiceProvider extends ServiceProvider
             
             } else {
     
+                // actually, maybe the safer route is to check for the existence of this method
+                // and only look for the fixed column if it's not found. 
                 $item = $class::bySku($sku)->first();
     
             }
             
-            
+
+
+ 
             
             if($item) {
-                basket()->add($item);
+
+                basket()->add($item, $qty);
+
                 // if this was an ajax request / modalLink, we should return a modal?
                 if ($return) {
                     // customised return
@@ -85,26 +159,9 @@ class CheckoutServiceProvider extends ServiceProvider
                 abort(404);
             }
 
-        })->name($segment . '.basket.add');
+        })->where('options', '(.*)')->name($segment . '.basket.add');
 
-        // dd($segment.'.approval.recall');
-        Route::get('/basket/add/' . $segment . '/{sku}/qty/{qty}', function($sku, $qty) use ($class, $return) {
-            
-            $item = $class::where('sku', $sku)->first();
-            if($item) {
-                basket()->add($item, $qty);
-                if ($return) {
-                    // customised return
-                    // - allow both a string (URI), or a callback Closure
-                } else {
-                    return redirect()->back();
-                }
-
-            } else {
-                abort(404);
-            }
-
-        })->name($segment . '.basket.add.qty');
+       
 
       
     });
