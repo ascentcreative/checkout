@@ -7,6 +7,8 @@ use AscentCreative\Checkout\Models\OrderItem;
 
 trait Sellable {
 
-    // nothing here yet... 
+    public function ordered() {
+        return $this->morphMany(OrderItem::class, 'sellable');
+    }
 
 }
