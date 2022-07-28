@@ -33,13 +33,6 @@ class ShippingTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('checkout_shipping_countries', function (Blueprint $table) {
-            // links the geo country list to shipping regions
-            $table->id();
-            $table->integer('country_id'); // geo country
-            $table->integer('region_id');
-            $table->timestamps();
-        });
 
         Schema::create('checkout_shipping_subservices', function (Blueprint $table) {
             $table->id();
@@ -71,7 +64,6 @@ class ShippingTables extends Migration
         
         Schema::drop('checkout_shipping_services');
         Schema::drop('checkout_shipping_regions');
-        Schema::drop('checkout_shipping_countries');
         Schema::drop('checkout_shipping_subservices');
         Schema::drop('checkout_shipping_weightbands');
 
