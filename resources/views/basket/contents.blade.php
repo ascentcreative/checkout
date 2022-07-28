@@ -19,18 +19,19 @@
         @foreach(basket()->items()->get()->groupBy('sku') as $item)
         <tr class='basket-item'>
             
-            <td width="100%"> <A href="{{ $item->sellable->url }}">{{ $item->sellable->getItemName() }}</A> </td>
+            {{-- @dd($item) --}}
+            <td width="100%"> <A href="{{ $item[0]->sellable->url }}">{{ $item[0]->sellable->getItemName() }}</A> </td>
             
             @if (basket()->hasPhysicalItems())
                 <td> 
-                    @if ($item->sellable->isPhysical())
+                    @if ($item[0]->sellable->isPhysical())
                         {{ $item->qty }} 
                     @endif
                 </td>
             @endif
             
-            <td class="text-right">&pound;{{ number_format($item->itemPrice, 2) }}</td>
-            <td><A href="/basket/remove/{{$item->uuid}}" class="bi-x-circle-fill ajax-link" data-response-target="#basket-contents"></A></td>
+            <td class="text-right">&pound;{{ number_format($item[0]->itemPrice, 2) }}</td>
+            <td><A href="/basket/remove/{{$item[0]->uuid}}" class="bi-x-circle-fill ajax-link" data-response-target="#basket-contents"></A></td>
         </tr>
         @endforeach
 
