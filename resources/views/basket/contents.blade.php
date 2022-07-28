@@ -16,7 +16,7 @@
 
     <tbody>
 
-        @foreach(basket()->items()->get() as $item)
+        @foreach(basket()->items()->get()->groupBy('sku') as $item)
         <tr class='basket-item'>
             
             <td width="100%"> <A href="{{ $item->sellable->url }}">{{ $item->sellable->getItemName() }}</A> </td>
@@ -29,7 +29,7 @@
                 </td>
             @endif
             
-            <td class="text-right">&pound;{{ number_format($item->purchasePrice, 2) }}</td>
+            <td class="text-right">&pound;{{ number_format($item->itemPrice, 2) }}</td>
             <td><A href="/basket/remove/{{$item->uuid}}" class="bi-x-circle-fill ajax-link" data-response-target="#basket-contents"></A></td>
         </tr>
         @endforeach
