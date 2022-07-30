@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Support\Str;
 
-
+use AscentCreative\Offer\Traits\Discountable;
 
 /**
  * A model to represent a customers basket
@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 class OrderItem extends Base
 {
    
-    use HasFactory;
+    use HasFactory, Discountable;
 
     public $table = 'checkout_order_items';
     public $fillable = ['order_id', 'sellable_type', 'sellable_id', 'sku', 'qty', 'itemPrice', 'title'];
@@ -114,7 +114,7 @@ class OrderItem extends Base
     public function getGroupKeyAttribute() {
         $array = [
             $this->sku,
-            $this->offer_id,
+            $this->offer->first()->id ?? '-',
             $this->itemPrice
         ];
         return join('_', $array);
