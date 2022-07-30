@@ -11,10 +11,11 @@ Use AscentCreative\Checkout\Models\Base;
 Use AscentCreative\Checkout\Models\Shipping\Service;
 Use AscentCreative\Geo\Traits\HasAddress;
 
+use AscentCreative\Offer\Traits\Discountable;
 
 class OrderBase extends Base
 {
-    use HasFactory;
+    use HasFactory, Discountable;
 
 
     public function items() {
@@ -39,6 +40,10 @@ class OrderBase extends Base
         foreach($this->items()->get() as $item) {
             $total += $item->itemPrice * $item->qty;
         }
+
+        $disc = $this->itemOfferUses()->sum('value');
+        $total += $disc; // $disc will be -ve;
+
         return $total;
     }
 
@@ -48,6 +53,9 @@ class OrderBase extends Base
         if($this->shipping_service) {
             $total += $this->shipping_service->getCost($this);
         }
+
+        $total += $this->offerUses()->sum('value');
+
         return $total;
     }
 
@@ -101,5 +109,17 @@ class OrderBase extends Base
         return $ttl;
     }
     
+
+    public function itemOfferUses() {
+
+        $itemIds = $this->items()->get()->pluck('id')->toArray();
+
+        $uses = \AscentCreative\Offer\Models\OfferUse::where('target_type', OrderItem::class)
+                                        ->whereIn('target_id', $itemIds);
+
+
+        return $uses;
+
+    }
 
 }
