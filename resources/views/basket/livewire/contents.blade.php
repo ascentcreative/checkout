@@ -24,7 +24,9 @@
             <td width="100%"> 
                 <div class="flex flex-between flex-nowrap flex-align-center">
                     <A href="{{ $items[0]->sellable->url }}">{{ $items[0]->sellable->getItemName() }}</A> 
-                    <div class="badge badge-secondary">{{ $items[0]->offer_alias }}</div>
+                    @if($items[0]->offer->count() > 0)
+                    <div class="badge badge-secondary">{{ $items[0]->offer->first()->alias }}</div>
+                    @endif
                 </div>
             
             </td>
@@ -36,18 +38,32 @@
                     @endif
                 </td>
             @endif
-            
-            <td class="text-right">&pound;{{ number_format($items[0]->itemPrice * count($items), 2) }}</td>
+
+            {{-- <td class="text-right">&pound;{{ number_format($items[0]->itemPrice * count($items), 2) }}</td> --}}
+            <td class="text-right">&pound;{{ number_format($items[0]->effectivePrice * count($items), 2) }}</td>
             <td><A href="#" wire:click="removeByKey('{{ $items[0]->group_key }}')" class="bi-x-circle-fill xajax-link" data-response-target="#basket-contents"></A></td>
         </tr>
    
         @endforeach
 
+        {{-- @foreach(basket()->itemOfferUses()->get()->groupBy('offer_id') as $offer=>$uses)
+
+            @include('checkout::basket.livewire.offerrow')
+
+        @endforeach --}}
+
+        <tr class="basket-item">
+            
+            <th class="text-right" @if (basket()->hasPhysicalItems()) colspan="2" @endif >Item Total:</th>
+            <td class="text-right font-weight-bold">&pound;{{ number_format(basket()->itemTotal, 2) }}</td>
+            <th></th>
+        </tr>
+
     </tbody>
 
     <tfoot>
         @if($svc = basket()->shipping_service)
-        <tr>
+        <tr class="basket-item">
             <th class="text-right"
                 @if (basket()->hasPhysicalItems())
                 colspan="2"
@@ -74,6 +90,17 @@
             <th></th>
         </tr>
     </tfoot>
+
+    <tbody>
+
+
+        @foreach(basket()->offerUses()->get()->groupBy('offer_id') as $offer=>$uses)
+
+           @include('checkout::basket.livewire.offerrow')
+
+        @endforeach
+
+    </tbody>
 
     
 </table>    
