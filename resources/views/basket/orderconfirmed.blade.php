@@ -1,7 +1,7 @@
 @extends(config('checkout.basket_blade')) 
 
 @section('basket.pagetitle', 'Thank you for your order')
-
+{{-- 
 @if($order->confirmed != 1)
 @push('scripts')
     <SCRIPT>
@@ -25,7 +25,7 @@
     </SCRIPT>
 @endpush
 @endif
-
+ --}}
 
 
 
