@@ -17,6 +17,8 @@ use AscentCreative\Checkout\Models\Shipping\Service;
 use AscentCreative\Transact\Contracts\iTransactable;
 use AscentCreative\Transact\Traits\Transactable;
 
+
+
 use AscentCreative\Geo\Traits\HasAddress;
 
 /**
@@ -28,7 +30,10 @@ class Basket extends OrderBase implements iTransactable
     // HasAddress,
      Transactable;
 
+
     public $consumable = ['countAll', 'summary'];
+
+    public $codes = [];
     
     /*
     * As a basket is essentially a non-confirmed order, can we point this to the orders table.
@@ -155,7 +160,7 @@ class Basket extends OrderBase implements iTransactable
             $item->qty = 1;
             $item->title = $sellable->getItemName();
             $item->itemPrice = $sellable->getItemPrice();
-            $this->addItem($item);
+            $this->items()->save($item);
 
         }
      
@@ -164,6 +169,20 @@ class Basket extends OrderBase implements iTransactable
         return true;
 
     }
+
+
+    public function setCode($code) {
+
+        // initial simple version - just add the code to the internal array and fire the update event
+        $this->codes = [$code]; // note, syntax tweak to only allow a single code.
+
+        BasketUpdated::dispatch($this);
+
+        // a more complete implementation will need the system to check that the code is valid.
+
+    }
+
+
 
     private function addItem(OrderItem $item) {
        
@@ -179,10 +198,12 @@ class Basket extends OrderBase implements iTransactable
 
     public function clear() {
 
-        $this->items()->delete();
+        foreach($this->items()->get() as $item) {
+            $item->delete();
+        }
    
         if($this->customer instanceof \AscentCreative\Checkout\Models\Customer) {
-            $this->customer()->delete();
+            $this->customer->delete();
         }
         $this->address()->delete();
 
@@ -214,6 +235,9 @@ class Basket extends OrderBase implements iTransactable
     public function removeItem(OrderItem $item, $qty) {
         BasketUpdated::dispatch($this);
     }
+
+
+
 
     /**
      * counts how many of this Sellable are in the basket:
@@ -257,6 +281,10 @@ class Basket extends OrderBase implements iTransactable
         $addr = $this->address;
         $addr->addressable()->associate($order);
         $addr->save();
+
+        // and any offers:
+        $offerUses = $this->offerUses()->update(['target_type' => get_class($order)]);
+        // $offerUses->target()->associate($order);
 
         OrderConfirmed::dispatch($this);
 
