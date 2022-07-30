@@ -41,6 +41,10 @@ class Checkout extends Component
         }
     }
 
+    public function setCode($data) {
+        basket()->setCode($data['code']);
+    }
+
     public function setDetails($data) {
 
         // validate:
