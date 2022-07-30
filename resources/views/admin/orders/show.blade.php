@@ -55,6 +55,7 @@
         <thead>
 
             <th>Item</th>
+            <th>Offers</th>
             <th width="100" class="text-right">Unit Price</th>
             <th width="100" class="text-right">Qty</th>
             <th width="100" class="text-right">Total</th>
@@ -63,35 +64,70 @@
 
         <tbody>
 
-            @foreach($model->items as $item)
+            @foreach($model->items->groupBy('group_key') as $key=>$items)
 
             <tr>
-                <td>{{ $item->title }}</td>
-                <td class="text-right">&pound;{{ number_format($item->itemPrice, 2) }}</td>
-                <td class="text-right">{{ $item->qty }}</td>
-                <td class="text-right">&pound;{{ number_format($item->itemPrice * $item->qty, 2) }}</td>
+                <td class="font-weight-bold">{{ $items[0]->title }}</td>
+                <td>{{ $items[0]->offer->first()->alias ?? '' }}</td>
+                <td class="text-right">&pound;{{ number_format($items[0]->effectivePrice, 2) }}</td>
+                <td class="text-right">{{ $qty = $items->sum('qty') }}</td>
+                <td class="text-right">&pound;{{ number_format($items[0]->effectivePrice * $qty, 2) }}</td>
             </tr>
 
             @endforeach
 
-        </tbody>
 
-        <tfoot>
+            @foreach($model->offerUses()->get()->groupBy('offer_id') as $offer=>$uses)
+
+                @php 
+                    $offer = \AscentCreative\Offer\Models\Offer::find($offer); 
+                    $format = new \NumberFormatter("en-GB", \NumberFormatter::CURRENCY);
+                @endphp
+
+                <tr>
+                    <td></td>
+                    <td>{{ $offer->alias ?? '' }}</td>
+                    {{-- <td class="text-right">&pound;{{ number_format($items[0]->effectivePrice, 2) }}</td> --}}
+                    {{-- <td class="text-right">{{ $qty = $items->sum('qty') }}</td> --}}
+                    <td colspan="3" class="text-right">{{ $format->format($uses->sum('value')) }}</td>
+                </tr>
+
+            @endforeach
+
+        {{-- </tbody>
+
+        <tfoot> --}}
+
+
+            @if($svc = $model->shipping_service)
+            <tr class="basket-item">
+                <th colspan="3" class="text-right">Shipping - {{ $svc->title ?? ''}}:</th>
+                <th></th>
+                <th class="text-right">
+                    @if(($ship = $svc->getCost($model)) == 0)
+                        FREE
+                    @else
+                        &pound;{{ number_format($ship ?? 'FREE', 2) }}
+                    @endif
+                </th>
+                
+            </tr>
+            @endif
 
             <tr>
-                <th colspan="2" class="text-right">Total:</th>
+                <th colspan="3" class="text-right">Total:</th>
                 <th class="text-right">{{ $model->totalQuantity }}</th>
                 <th class="text-right">&pound;{{ number_format($model->total, 2) }}</th>
             </tr>
            
             <tr>
-                <th colspan="2" class="text-right font-weight-normal">Fees:</th>
+                <th colspan="3" class="text-right font-weight-normal">Fees:</th>
                 <th class="text-right"></th>
                 <th class="text-right font-weight-normal">&pound;{{ number_format($model->fees, 2) }}</th>
             </tr>
        
             <tr>
-                <th colspan="2" class="text-right font-weight-normal">Nett:</th>
+                <th colspan="3" class="text-right font-weight-normal">Nett:</th>
                 <th class="text-right font-weight-normal"></th>
                 <th class="text-right font-weight-normal">&pound;{{ number_format($model->nett, 2) }}</th>
             </tr>
