@@ -23,6 +23,7 @@ class CheckoutServiceProvider extends ServiceProvider
         __DIR__.'/../config/checkout.php', 'checkout'
     );
 
+
     $this->app->register(EventServiceProvider::class);
 
 
@@ -31,6 +32,9 @@ class CheckoutServiceProvider extends ServiceProvider
         return new $cls();
     });
 
+    $this->app->singleton('checkout:sellables',function(){
+        return new \AscentCreative\Checkout\Registries\Sellables();
+    });
 
     $this->registerRouteMacros();
    

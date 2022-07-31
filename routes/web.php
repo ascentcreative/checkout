@@ -11,6 +11,10 @@ use AscentCreative\Checkout\Notifications\OrderConfirmation;
 
 use AscentCreative\Checkout\Facades\ShippingCalculator;
 
+use AscentCreative\Checkout\Facades\Sellables;
+
+
+
 //Route::get('/basket', [AscentCreative\Checkout\Controllers\BasketController::class, 'index']);
 //Route::get('/basket', [App\Http\Controllers\BasketController::class, 'index']);
 
@@ -87,6 +91,35 @@ Route::middleware(['web'])->group(function () {
         Route::get('/orders/{order}/resendnotification', [AscentCreative\Checkout\Controllers\Admin\OrderController::class, 'resendNotification']);
         Route::get('/orders/{order}/delete', [AscentCreative\Checkout\Controllers\Admin\OrderController::class, 'delete']);
         Route::resource('/orders', OrderController::class);
+
+        Route::get('/sellables/autocomplete', function() {
+
+            // dd();
+
+            $term = request()->term; 
+
+            $items = collect([]);
+
+            foreach(Sellables::getGroupRegistry() as $cls) {
+                $items = $items->concat($cls::autocomplete($term)->get());
+            }
+
+            foreach(Sellables::getRegistry() as $cls) {
+                $items = $items->concat($cls::autocomplete($term)->get());
+            }
+
+            $items = collect($items)->transform( function($item) {
+                $item->label = $item->sellable_label;
+                return [
+                    'label' => $item->sellable_label,
+                    'type' => get_class($item),
+                    'id' => $item->id
+                ];
+            });
+
+            return $items;
+        
+        })->name('sellables.autocomplete');
 
         Route::get('/allintents', function() {
 
