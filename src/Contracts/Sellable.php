@@ -16,4 +16,6 @@ interface Sellable {
 
     public function getDownloadUrl();
 
+    public function getSellableLabelAttribute();
+
 }
