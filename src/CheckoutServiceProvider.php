@@ -97,24 +97,33 @@ class CheckoutServiceProvider extends ServiceProvider
         // })->name($segment . '.basket.add.qty');
 
             
-        // dd($segment.'.approval.recall');
         Route::get('/basket/add/' . $segment . '/{sku}/{options?}', function($sku, $options=null) use ($class, $return) {
 
             if(is_null($options)) {
+                // options may have been passed as URL params
                 $options = request()->all();
             } else {
+                // split options out of the url segments
                 $split = explode('/', $options);
                 $options = [];
                 for($i=0; $i < count($split); $i = $i+2) {
+                    // alternate key and value
                     $options[$split[$i]] = $split[$i+1] ?? null;
                 }
             }
           
+
+            /*
+            * Handle special options:
+            */
+
+            // "format" option = physical vs download (if the object allows for both)
             if (isset($options['format'])) {
                 $format = $options['format'];
                 unset($options['format']);
             }
 
+            // the qty to add to the basket
             if (isset($options['qty'])) {
                 $qty = $options['qty'];
                 unset($options['qty']);
@@ -122,6 +131,8 @@ class CheckoutServiceProvider extends ServiceProvider
                 $qty = 1;
             }
 
+
+            // resolve the 'product' object:
             $object = new $class();
 
             // some items may not have an sku column, but may need to resolve it via their own method
@@ -144,12 +155,11 @@ class CheckoutServiceProvider extends ServiceProvider
             }
             
 
-
- 
-            
             if($item) {
 
+                // when adding, we should also be logging the options... if any
                 basket()->add($item, $qty);
+
 
                 // if this was an ajax request / modalLink, we should return a modal?
                 if ($return) {

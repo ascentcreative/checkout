@@ -37,6 +37,14 @@
                 {{-- @yield('basket.contentstable') --}}
             </div>
 
+            @dump(basket()->id)
+            @dump(basket()->toArray())
+            @dump(basket()->address)
+            @dump(basket()->customer)
+            @dump(basket()->items)
+
+            {{-- @dump(basket()->address()->first()) --}}
+
         </div>
     
     

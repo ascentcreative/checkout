@@ -59,7 +59,7 @@ class OrderListener
                             ->notify(new OrderNotification($event->order));
                         
         } catch (\Exception $e) {
-            \Log::error('Error sending emails - ' . $e->getMessage);
+            \Log::error('Error sending emails - ' . $e->getMessage());
         }
 
     }

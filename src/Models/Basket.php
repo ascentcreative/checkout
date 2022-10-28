@@ -17,8 +17,6 @@ use AscentCreative\Checkout\Models\Shipping\Service;
 use AscentCreative\Transact\Contracts\iTransactable;
 use AscentCreative\Transact\Traits\Transactable;
 
-
-
 use AscentCreative\Geo\Traits\HasAddress;
 
 /**
@@ -26,12 +24,11 @@ use AscentCreative\Geo\Traits\HasAddress;
  */
 class Basket extends OrderBase implements iTransactable
 {
-    use HasFactory, 
-    // HasAddress,
-     Transactable;
-
+    use HasFactory, HasAddress, Transactable;
 
     public $consumable = ['countAll', 'summary'];
+
+    protected $hidden = ['address'];
 
     public $codes = [];
     
@@ -78,27 +75,16 @@ class Basket extends OrderBase implements iTransactable
         static::saved(function($model) {
 
             if(is_null($model->address)) {
+
                 $addr = \AscentCreative\Geo\Models\Address::create([
                     'addressable_type' => get_class($model),
                     'addressable_id' => $model->id
                 ]);
-                $model->address = $addr;
+                $model->address()->save($addr);
             }
 
         });
     }
-
-    /* define the relationship */
-    public function address() {
-    
-        return $this->morphOne(\AscentCreative\Geo\Models\Address::class, 'addressable');
-
-        // if($type) {
-        //     $q = $q->where('address_type', $type);
-        // }
-
-        // return $q;
-     }
 
    
     protected static function booted()

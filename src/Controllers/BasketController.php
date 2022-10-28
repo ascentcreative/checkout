@@ -16,13 +16,13 @@ class BasketController extends Controller
    
     public function index() {
 
-      headTitle()->add("Your Basket");
+        headTitle()->add("Your Basket");
 
-      if(config('checkout.livewire_checkout')) {
-        return view('checkout::basket.livewire.show');
-      } else {
-        return view('checkout::basket.show');
-      }
+        if(config('checkout.livewire_checkout')) {
+            return view('checkout::basket.livewire.show');
+        } else {
+            return view('checkout::basket.show');
+        }
 
     }
 

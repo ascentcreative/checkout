@@ -6,6 +6,9 @@ return [
 
     'global_blade_section' => env('CHECKOUT_GLOBAL_BLADE', 'pagebody'),
 
+    'basket_blade' => env('CHECKOUT_BASKET_BLADE', 'checkout::basket.layout'),
+    'order_blade' => env('CHECKOUT_ORDER_BLADE', 'checkout.order.layout'),
+
 
     /** Basket Item Row */
     'basket_item_blade' => '',
@@ -14,9 +17,9 @@ return [
 
 
     /** Anonymous checkout? */
-    'anonymous_checkout' => false,
+    'anonymous_checkout' => true,
 
-    'livewire_checkout' => false,
+    'livewire_checkout' => true,
 
    
     'shippingcalculator' => '\AscentCreative\Checkout\Shipping\WeightBasedShippingCalculator',

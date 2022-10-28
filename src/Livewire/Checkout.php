@@ -70,9 +70,12 @@ class Checkout extends Component
        
         $this->country = $data;
         // dump(basket()->id);
-        // dump(basket()->address);
-        basket()->address->country_id = $data;
-        basket()->address->save();
+        // dd(basket()->address);
+
+        $addr = basket()->address()->first();
+        $addr->country_id = $data;
+        // ->country_id = $data;
+        basket()->address()->save($addr);
 
     }
 

@@ -41,7 +41,7 @@
 
             {{-- <td class="text-right">&pound;{{ number_format($items[0]->itemPrice * count($items), 2) }}</td> --}}
             <td class="text-right">&pound;{{ number_format($items[0]->effectivePrice * count($items), 2) }}</td>
-            <td><A href="#" wire:click="removeByKey('{{ $items[0]->group_key }}')" class="bi-x-circle-fill xajax-link" data-response-target="#basket-contents"></A></td>
+            <td><A href="#" wire:click.prevent="removeByKey('{{ $items[0]->group_key }}')" class="bi-x-circle-fill xajax-link" data-response-target="#basket-contents"></A></td>
         </tr>
    
         @endforeach

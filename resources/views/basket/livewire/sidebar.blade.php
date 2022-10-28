@@ -67,7 +67,7 @@
 
                 {{-- Country Selector --}}
                 <x-cms-form-foreignkeyselect type="select" label="Select your country" labelField="name" name="address[country_id]" 
-                    :query="\AscentCreative\Geo\Models\Country::orderBy('is_common', 'desc')" :value="basket()->address->country_id ?? ''" wrapper="simple">
+                    :query="\AscentCreative\Geo\Models\Country::orderBy('is_common', 'desc')" :value="basket()->address()->first()->country_id ?? ''" wrapper="simple">
                     <x-slot name="attr">
                         wire:change="setShippingCountry($event.target.value)"
                     </x-slot>
@@ -75,7 +75,7 @@
 
             
                 {{-- Shipment Type --}}
-                @if(basket()->address->country_id)
+                @if(basket()->address()->first()->country_id)
 
                     <x-cms-form-blockselect name="shipping_service_id" label="Choose Shipping Method:" :value="basket()->shipping_service->id ?? ''"
                         {{-- :options="collect(app('checkout:shippingcalculator')::getQuotes($country))" --}}
