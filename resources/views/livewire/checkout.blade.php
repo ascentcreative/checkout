@@ -4,11 +4,11 @@
 
     
 
-    <div class="grid" style="display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))">
+    <div class="grid" style="display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))">
 
         <div style="grid-column: 1 / span 2;">
     
-            <div class="border bg-white p-5">
+            <div class="border bg-white p-3">
 
                
                 @include('checkout::basket.livewire.contents')
@@ -34,16 +34,9 @@
 
                 </div>
                 @endif
-                {{-- @yield('basket.contentstable') --}}
+              
             </div>
 
-            @dump(basket()->id)
-            @dump(basket()->toArray())
-            @dump(basket()->address)
-            @dump(basket()->customer)
-            @dump(basket()->items)
-
-            {{-- @dump(basket()->address()->first()) --}}
 
         </div>
     
