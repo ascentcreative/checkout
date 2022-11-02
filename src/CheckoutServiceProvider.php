@@ -166,7 +166,13 @@ class CheckoutServiceProvider extends ServiceProvider
                     // customised return
                     // - allow both a string (URI), or a callback Closure
                 } else {
-                    return redirect()->back();
+
+                    if(request()->headers->get('ModalLink')) {
+                        return view('checkout::basket.modal.updated');
+                    } else {
+                        return redirect()->back();
+                    }
+                    
                 }
 
             } else {
@@ -202,6 +208,7 @@ class CheckoutServiceProvider extends ServiceProvider
     $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
     $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
     
   }
 
