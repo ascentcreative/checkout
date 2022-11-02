@@ -46,7 +46,8 @@ class Service extends Model {
             $q->whereHas('countries', function($q) use ($country) {
                 $q->where('geo_countries.id', $country);
             });
-        })->get();
+        })
+        ->orWhereDoesntHave('region')->get();
 
     }
 
