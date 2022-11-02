@@ -74,6 +74,8 @@ class Basket extends OrderBase implements iTransactable
 
         static::saved(function($model) {
 
+            session(['checkout_basket_id' => $model->id]);
+
             if(is_null($model->address)) {
 
                 $addr = \AscentCreative\Geo\Models\Address::create([
@@ -195,6 +197,7 @@ class Basket extends OrderBase implements iTransactable
 
         BasketUpdated::dispatch($this);
         session()->pull('checkout_basket');
+        session()->pull('checkout_basket_id');
         $this->delete();
 
     }
