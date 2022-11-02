@@ -25,7 +25,7 @@
             @if (basket()->hasPhysicalItems())
                 <td> 
                     @if ($item[0]->sellable->isPhysical())
-                        {{ $item->qty }} 
+                        {{ count($item) }} 
                     @endif
                 </td>
             @endif
