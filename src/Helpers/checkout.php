@@ -9,18 +9,24 @@ use AscentCreative\Checkout\Models\Basket;
  * This means the basket is only created in the session when we call it.
  */
 function basket() {
-	 
-    if(!session()->has('checkout_basket')) {
-        // throw new Exception('CREATING BASKET');
-        $basket = new Basket();
-        // $basket->save();
-        session(['checkout_basket'=> $basket]);
-    } else {
-        // check if the basket is now an order, and bin if needed.
 
-        // dump(session('checkout_basket')->is_confirmed);
-    }
+    $basketManager = AscentCreative\Checkout\BasketManager::getInstance();
 
-	return session('checkout_basket');
+    // // dump($basket->id);
+    // // dd($basket->id);
+
+    // // dump(session('checkout_basket_id'));
+    // // session()->pull('checkout_basket_id');
+
+    // // No stored id, so we'll just return a dummy one which might get saved later.
+    // if(!session()->has('checkout_basket_id')) {
+    //     $basket = new Basket();
+    //     // dd($basket);
+    // } else {
+    //     $basket = Basket::where('id', session('checkout_basket_id'))->with('items')->with('customer')->first();
+    // }
+
+    return $basketManager->basket;
+	// return session('checkout_basket');
 
 }
