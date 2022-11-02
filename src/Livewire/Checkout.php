@@ -55,10 +55,14 @@ class Checkout extends Component
 
         // populate info on basket:
         if(!basket()->customer instanceof \App\Models\User) {
-            basket()->customer->name = $data['name'];
-            basket()->customer->email = $data['email'];
-            basket()->customer->save();
+            basket()->customer->update([
+                'name'=>$data['name'],
+                'email'=>$data['email']
+            ]);
         }
+
+        // dd($basket()->customer)
+
         // set the next tab:
         $this->tab_status['details'] = 'complete';
 
