@@ -97,7 +97,7 @@ class CheckoutServiceProvider extends ServiceProvider
         // })->name($segment . '.basket.add.qty');
 
             
-        Route::get('/basket/add/' . $segment . '/{sku}/{options?}', function($sku, $options=null) use ($class, $return) {
+        Route::match(['get', 'post'], '/basket/add/' . $segment . '/{sku}/{options?}', function($sku, $options=null) use ($class, $return) {
 
             if(is_null($options)) {
                 // options may have been passed as URL params
