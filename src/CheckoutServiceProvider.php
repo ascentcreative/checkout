@@ -215,8 +215,8 @@ class CheckoutServiceProvider extends ServiceProvider
   // register the components
   public function bootComponents() {
 
-    // Blade::component('project-element', 'AscentCreative\Projecct\View\Components\Element');
-  
+    \Livewire::component('checkout', \AscentCreative\Checkout\Livewire\Checkout::class);
+    \Livewire::component('basket-summary', \AscentCreative\Checkout\Livewire\BasketSummary::class);
 
   }
 
@@ -236,7 +236,7 @@ class CheckoutServiceProvider extends ServiceProvider
   public function bootDirectives() {
 
     //
-    \Livewire::component('checkout', \AscentCreative\Checkout\Livewire\Checkout::class);
+   
 
   }
 
