@@ -146,6 +146,7 @@ class Checkout extends Component
 
     public function render()
     {
+        $this->dispatchBrowserEvent('basketUpdated');
         return view('checkout::livewire.checkout');
     }
 }
