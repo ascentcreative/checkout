@@ -63,20 +63,13 @@ class BasketController extends Controller
      */
     public function complete() {
 
-        // check if we have an order for this basket yet.
-        // if not, ask the user to refresh the page in a moment.
+        // basket will already have been confirmed at this point (in the Transact WebHook process)
+        // so rather than a basket, we need to fetch the order;
 
-        // if the order has been created (by the webhook/IPN)
-        // display ordered items with links to download. 
+        $order = Order::find(session('checkout_basket_id'));
+        $uuid = $order->uuid;
 
-
-        $uuid = basket()->uuid;
-        session()->pull('checkout_basket');
-       
-
-        // redirect to view the order
-        // note that the order may not yet be confirmed, so view may need to handle the period between the payment and the webhook.
-        // $order = Order::where('uuid', $basket->uuid);
+        // redirect to view the order confirmation screen
         return redirect('/basket/orderconfirmed/' . $uuid); //->view('checkout::basket.complete')->with('order', $order);
 
     }
