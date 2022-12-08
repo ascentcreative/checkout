@@ -17,16 +17,24 @@
 
                 <div class="flex flex-between mt-3">
 
-                    <form wire:submit.prevent="setCode(Object.fromEntries(new FormData($event.target)))">
-                        <div class="input-group">
-                        {{-- <input type="text" placeholder="Add Code..." /> --}}
-                        <x-forms-fields-input type="text" name="code" value="" label="code" wrapper="none" placeholder="Enter Code" />
-                        <div class="input-group-append">
-                            <button class="btn btn-primary btn-sm">Apply</button>
-                        </div>
-                        </div>
-                    </form>
-                    
+
+                    <div>
+                        {{-- If there are offers with codes, show the code field: --}}
+                        @if(\AscentCreative\Offer\Models\Offer::whereNotNull('code')->exists())
+
+                            <form wire:submit.prevent="setCode(Object.fromEntries(new FormData($event.target)))">
+                                <div class="input-group">
+                                {{-- <input type="text" placeholder="Add Code..." /> --}}
+                                <x-forms-fields-input type="text" name="code" value="" label="code" wrapper="none" placeholder="Enter Code" />
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary btn-sm">Apply</button>
+                                </div>
+                                </div>
+                            </form>
+
+                        @endif
+
+                    </div>
         
                     <div class="text-right">
                         <button wire:click="clear" class="button btn btn-secondary btn-sm">Clear Basket</button>
