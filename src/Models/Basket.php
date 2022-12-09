@@ -202,14 +202,28 @@ class Basket extends OrderBase implements iTransactable
 
     }
 
-    public function remove($uuid, $qty=null) {
 
-        $item = $this->items()->where('uuid', $uuid)->first();
+    // old method from when items were rolled up in the DB
+    // public function remove($uuid, $qty=null) { // $item = $this->items()->where('uuid', $uuid)->first();
 
-        if($item) {
+        // if($item) {
+        //     $item->delete();
+        // }
+
+    // }
+
+    // new method where each DB row has a qty of 1
+    public function remove(Sellable $sellable, $qty=1) {
+
+        $items = $this->items()->where('sellable_type', get_class($sellable))
+                        ->where('sellable_id', $sellable->id)
+                        ->limit($qty)
+                        ->get();
+
+        foreach($items as $item) {
             $item->delete();
         }
-        
+                      
         BasketUpdated::dispatch($this);
 
     }
@@ -226,6 +240,24 @@ class Basket extends OrderBase implements iTransactable
     }
 
 
+    public function setQuantityByKey($key, $qty) {
+
+        // get the existing items for this key
+        $items = $this->items()->get()->where('group_key', $key)->values(); // values removes the numerical index from the original collection
+
+        if($qty < count($items)) {
+            // target qty is fewer than we currently have - remove extras
+            $this->remove($items[0]->sellable, count($items) - $qty);
+        }
+
+        if($qty > count($items)) {
+            // target qty is greater than we currently have - add more
+            $this->add($items[0]->sellable, $qty - count($items));
+        }
+
+        BasketUpdated::dispatch($this);
+
+    }
 
 
     /**

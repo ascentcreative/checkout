@@ -34,14 +34,15 @@
             @if (basket()->hasPhysicalItems())
                 <td class="text-center"> 
                     @if ($items[0]->sellable->isPhysical())
-                        {{ count($items) }} 
+                        {{-- {{ count($items) }}  --}}
+                        <input class="form-control text-center" style="width: 60px" wire:change="updateQty('{{ $items[0]->group_key }}', $event.target.value)" value="{{ count($items) }}" />
                     @endif
                 </td>
             @endif
 
             {{-- <td class="text-right">&pound;{{ number_format($items[0]->itemPrice * count($items), 2) }}</td> --}}
-            <td class="text-right">&pound;{{ number_format($items[0]->effectivePrice * count($items), 2) }}</td>
-            <td><A href="#" wire:click.prevent="removeByKey('{{ $items[0]->group_key }}')" class="bi-x-circle-fill xajax-link" data-response-target="#basket-contents"></A></td>
+            <td class="text-right">&pound;{{ number_format($items->sum('effectivePrice'), 2) }}</td>
+            <td><A href="#" wire:click.prevent="removeByKey('{{ $items[0]->group_key }}')" class="bi-x-circle-fill"></A></td>
         </tr>
    
         @endforeach

@@ -31,7 +31,7 @@
             @endif
             
             <td class="text-right">&pound;{{ number_format($item[0]->itemPrice, 2) }}</td>
-            <td><A href="/basket/remove/{{$item[0]->uuid}}" class="bi-x-circle-fill ajax-link" data-response-target="#basket-contents"></A></td>
+            {{-- <td><A href="/basket/remove/{{$item[0]->uuid}}" class="bi-x-circle-fill ajax-link" data-response-target="#basket-contents"></A></td> --}}
         </tr>
         @endforeach
 

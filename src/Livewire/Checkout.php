@@ -144,6 +144,12 @@ class Checkout extends Component
         basket()->removeByKey($key);
     }
 
+    public function updateQty($key, $qty) {
+        // dump($key, $qty);
+        // $sellable = \AscentCreative\Store\Models\Product::find(17);
+        basket()->setQuantityByKey($key, $qty);
+    }
+
     public function render()
     {
         $this->dispatchBrowserEvent('basketUpdated');

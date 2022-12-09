@@ -1,15 +1,11 @@
-<div>
-    <H1 style="font-size: 2rem;">Your Basket</H1>
-
-
-    
+<div class="centralise p-0">
+    <H1 class="mb-4" style="font-size: x2rem;">Your Basket</H1>
 
     <div class="grid" style="display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))">
 
         <div style="grid-column: 1 / span 2;">
     
             <div class="border bg-white p-3">
-
                
                 @include('checkout::basket.livewire.contents')
                 
@@ -38,6 +34,7 @@
         
                     <div class="text-right">
                         <button wire:click="clear" class="button btn btn-secondary btn-sm">Clear Basket</button>
+                        {{-- <button wire:click="update" class="button btn btn-secondary btn-sm">Update Basket</button> --}}
                     </div>
 
                 </div>
