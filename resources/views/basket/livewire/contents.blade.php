@@ -109,3 +109,30 @@
 </div>
 
 @endif
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        Livewire.hook('component.initialized', (component) => {})
+        Livewire.hook('element.initialized', (el, component) => {})
+        Livewire.hook('element.updating', (fromEl, toEl, component) => {})
+        Livewire.hook('element.updated', (el, component) => {})
+        Livewire.hook('element.removed', (el, component) => {})
+        Livewire.hook('message.sent', (message, component) => {
+            $('#basket-contents').addClass('basket-updating');
+            console.log('starting basket update');
+            // alert('sending');
+        })
+        Livewire.hook('message.failed', (message, component) => {
+            // alert('fail');
+        })
+        Livewire.hook('message.received', (message, component) => {
+            // alert('recv');
+        })
+        Livewire.hook('message.processed', (message, component) => {
+            $('#basket-contents').removeClass('basket-updating');
+            console.log('basket update complete');
+            // alert('proc');
+        })
+    });
+</script>
