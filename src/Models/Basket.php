@@ -72,20 +72,21 @@ class Basket extends OrderBase implements iTransactable
             
         });
 
-        static::saved(function($model) {
+        // static::saved(function($model) {
 
-            session(['checkout_basket_id' => $model->id]);
+        //     session(['checkout_basket_id' => $model->id]);
 
-            if(is_null($model->address)) {
+        //     if(is_null($model->address)) {
 
-                $addr = \AscentCreative\Geo\Models\Address::create([
-                    'addressable_type' => get_class($model),
-                    'addressable_id' => $model->id
-                ]);
-                $model->address()->save($addr);
-            }
+        //         $addr = \AscentCreative\Geo\Models\Address::create([
+        //             'addressable_type' => get_class($model),
+        //             'addressable_id' => $model->id
+        //         ]);
+        //         $model->address()->save($addr);
+        //     }
 
-        });
+        // });
+        
     }
 
    
@@ -125,32 +126,34 @@ class Basket extends OrderBase implements iTransactable
            $sku = $sellable->sku ?? (get_class($sellable) . '_' . $sellable->id);
         } 
 
-        // $item = OrderItem::firstOrCreate([
-        //     'order_id' => $this->id,
-        //     'sellable_type' => get_class($sellable),
-        //     'sellable_id' => $sellable->id,
-        //     'sku' => $sku,
-        // ], [
-        //     'title' => $sellable->getItemName(),
-        //     'itemPrice' => $sellable->getItemPrice(),
-        //     'itemPrice' => $sellable->getItemPrice(),
-        //     'qty' => 0,
-        // ]);
+        $item = OrderItem::firstOrCreate([
+            'order_id' => $this->id,
+            'sellable_type' => get_class($sellable),
+            'sellable_id' => $sellable->id,
+            'sku' => $sku,
+        ], [
+            'title' => $sellable->getItemName(),
+            'itemPrice' => $sellable->getItemPrice(),
+            'itemPrice' => $sellable->getItemPrice(),
+            'qty' => 0,
+        ]);
 
-        // $item->increment('qty', $qty);
+        // dd($qty);
 
-        for ($i = 0; $i < $qty; $i++) {
+        $item->increment('qty', $qty);
+
+        // for ($i = 0; $i < $qty; $i++) {
     
-            $item = new OrderItem();
-            $item->sellable_type = get_class($sellable);
-            $item->sellable_id = $sellable->id;
-            $item->sku = $sku;
-            $item->qty = 1;
-            $item->title = $sellable->getItemName();
-            $item->itemPrice = $sellable->getItemPrice();
-            $this->items()->save($item);
+        //     $item = new OrderItem();
+        //     $item->sellable_type = get_class($sellable);
+        //     $item->sellable_id = $sellable->id;
+        //     $item->sku = $sku;
+        //     $item->qty = 1;
+        //     $item->title = $sellable->getItemName();
+        //     $item->itemPrice = $sellable->getItemPrice();
+        //     $this->items()->save($item);
 
-        }
+        // }
      
         BasketUpdated::dispatch($this);
 
@@ -245,18 +248,48 @@ class Basket extends OrderBase implements iTransactable
         // get the existing items for this key
         $items = $this->items()->get()->where('group_key', $key)->values(); // values removes the numerical index from the original collection
 
-        if($qty < count($items)) {
+        $basket_qty = $items->sum('qty');
+
+        if($qty < $basket_qty) {
             // target qty is fewer than we currently have - remove extras
-            $this->remove($items[0]->sellable, count($items) - $qty);
+            $this->remove($items[0]->sellable, $basket_qty - $qty);
         }
 
-        if($qty > count($items)) {
+        if($qty > $basket_qty) {
             // target qty is greater than we currently have - add more
-            $this->add($items[0]->sellable, $qty - count($items));
+            $this->add($items[0]->sellable, $qty - $basket_qty);
         }
 
         BasketUpdated::dispatch($this);
 
+    }
+
+
+    /**
+     * Offers and other operations may split rows into different records.
+     * This function recombines them.
+     * 
+     * @return [type]
+     */
+    public function collateItems() {
+
+        dump($this->items()->get()->groupBy('morph_key')); //('sellable_type');
+
+        foreach($this->items()->get()->groupBy('morph_key') as $groupkey=>$group) {
+
+            dump($groupkey . " :: " . $group->sum('qty'));
+
+            $group[0]->qty = $group->sum('qty');
+            $group[0]->save();
+
+            $group->shift();
+
+            foreach($group as $item) {
+                $item->delete();
+            }
+
+        }
+        
     }
 
 

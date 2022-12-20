@@ -43,8 +43,9 @@ class BasketLoginListener
     {
         
         if ($basket = basket()) {
-            $basket->customer()->associate(Auth::user());
-            $basket->save();
+            $basket->customer = Auth::user();
+            // $basket->customer()->associate(Auth::user());
+            // $basket->save();
         }
 
     }

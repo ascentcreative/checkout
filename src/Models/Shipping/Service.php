@@ -21,11 +21,11 @@ class Service extends Model {
         return $this->belongsTo(Region::class);
     }
 
-    public function getCost(OrderBase $basket) {
+    public function getCost($basket) {
         return $this->getCostAttribute($basket);
     }
 
-    public function getCostAttribute(OrderBase $basket = null) {
+    public function getCostAttribute($basket = null) {
 
         if(is_null($basket)) {
             $basket = basket();

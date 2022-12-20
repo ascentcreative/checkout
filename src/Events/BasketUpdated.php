@@ -24,7 +24,7 @@ class BasketUpdated
      *
      * @return void
      */
-    public function __construct(\AscentCreative\Checkout\Models\Basket $basket)
+    public function __construct(\AscentCreative\Checkout\Basket $basket)
     {
         $this->basket = $basket;
     }

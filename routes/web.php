@@ -14,11 +14,42 @@ use AscentCreative\Checkout\Facades\ShippingCalculator;
 use AscentCreative\Checkout\Facades\Sellables;
 
 
+use AscentCreative\Checkout\Events\BasketUpdated;
+
+
 
 //Route::get('/basket', [AscentCreative\Checkout\Controllers\BasketController::class, 'index']);
 //Route::get('/basket', [App\Http\Controllers\BasketController::class, 'index']);
 
 Route::middleware(['web'])->group(function () {
+
+    Route::get('/baskettest', function() {
+
+        // basket()->clear();
+
+        // dump(basket()->getShippingQuotes());
+        basket()->commit();
+
+        dump(basket());
+        // $item = App\Models\Product::find(462);
+
+        // basket()->add($item, 1);
+        // basket()->remove($item); //, 1); //, 500); //, 1);
+        
+        // BasketUpdated::dispatch(basket());
+
+        // dump(basket());
+
+        // dump(basket()->countOf($item));
+
+        // dump(basket()->countAll());
+
+        // dump(basket()->items()->groupBy('group_key'));
+
+    
+
+    });
+
 
     Route::get('/basket/add', function() {
         
@@ -42,7 +73,10 @@ Route::middleware(['web'])->group(function () {
         Route::get('/basket/pollorderconfirmation/{uuid}', [AscentCreative\Checkout\Controllers\BasketController::class, 'pollorderconfirmation']);
 
         Route::post('/basket/transact', function() {
-            return \AscentCreative\Transact\Transact::start(basket());
+
+            // need to commit the basket to the DB
+            // also need to handle a basket which may have been changed since last commit? Or maybe just ignore that one and create new.
+            return \AscentCreative\Transact\Transact::start(basket()->commit());
         });
            
     });

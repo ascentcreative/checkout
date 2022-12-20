@@ -9,7 +9,7 @@
                
                 @include('checkout::basket.livewire.contents')
                 
-                @if(!basket()->isEmpty)
+                @if(!basket()->isEmpty())
 
                 <div class="flex flex-between mt-3">
 
@@ -20,7 +20,6 @@
 
                             <form wire:submit.prevent="setCode(Object.fromEntries(new FormData($event.target)))">
                                 <div class="input-group">
-                                {{-- <input type="text" placeholder="Add Code..." /> --}}
                                 <x-forms-fields-input type="text" name="code" value="" label="code" wrapper="none" placeholder="Enter Code" />
                                 <div class="input-group-append">
                                     <button class="btn btn-primary btn-sm">Apply</button>
@@ -46,7 +45,7 @@
         </div>
     
     
-        @if(!basket()->isEmpty)
+        @if(!basket()->isEmpty())
         <div>
             
             @include('checkout::basket.livewire.sidebar')

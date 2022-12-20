@@ -1,4 +1,4 @@
-@if (basket()->isEmpty)
+@if (basket()->isEmpty())
     <H2>Your basket is currently empty</H2>   
 @else
 
@@ -17,32 +17,42 @@
 
     <tbody>
 
-        @foreach(basket()->items()->get()->groupBy('group_key')->sortBy(function($v,$k) { return $v[0]->offer_id; }) as $sku=>$items)
-        
+        {{-- @foreach(basket()->items()->groupBy('group_key')->sortBy(function($v,$k) { return $v[0]->offer_id; }) as $sku=>$items) --}}
+        @foreach(basket()->items()->groupBy('sku')->sortBy('sku') as $sku=>$items)
+
         <tr class='basket-item'>
             
             <td width="100%"> 
                 <div class="flex flex-between flex-nowrap flex-align-center">
                     <A href="{{ $items[0]->sellable->url }}">{{ $items[0]->sellable->getItemName() }}</A> 
-                    @if($items[0]->offer->count() > 0)
-                    <div class="badge badge-secondary">{{ $items[0]->offer->first()->alias }}</div>
-                    @endif
                 </div>
             
+                @php
+                    $offers = $items->pluck('offer_id')->unique()->filter();
+                    // dump($offers);
+                @endphp
+                @foreach($offers as $offer) 
+                    <div class="badge badge-secondary">{{ AscentCreative\Offer\Models\Offer::find($offer)->alias }}</div>
+                @endforeach
+
             </td>
             
             @if (basket()->hasPhysicalItems())
                 <td class="text-center"> 
-                    @if ($items[0]->sellable->isPhysical())
-                        {{-- {{ count($items) }}  --}}
-                        <input class="form-control text-center" style="width: 60px" wire:change="updateQty('{{ $items[0]->group_key }}', $event.target.value)" value="{{ count($items) }}" />
+                    @if ($items[0]->is_physical)
+                        <input class="form-control text-center" style="width: 60px" wire:change="updateQty('{{ $items[0]->sku }}', $event.target.value)" value="{{ ($items->sum('qty')) }}" />
                     @endif
                 </td>
             @endif
 
+            <td class="text-right">
+              
+                &pound;{{ number_format($items->sum('itemPrice'), 2) }}
+                @if(count($offers) > 0) <div class="text-muted small text-strikeout"><del>&pound;{{ number_format($items->sum('original_price'), 2) }}</del></div> @endif
+            </td>
             {{-- <td class="text-right">&pound;{{ number_format($items[0]->itemPrice * count($items), 2) }}</td> --}}
-            <td class="text-right">&pound;{{ number_format($items->sum('effectivePrice'), 2) }}</td>
-            <td><A href="#" wire:click.prevent="removeByKey('{{ $items[0]->group_key }}')" class="bi-x-circle-fill"></A></td>
+            {{-- <td class="text-right">&pound;{{ number_format($items[0]->itemPrice * $items->sum('qty'), 2) }}</td> --}}
+            <td><A href="#" wire:click.prevent="updateQty('{{ $items[0]->sku }}', 0)" class="bi-x-circle-fill"></A></td>
         </tr>
    
         @endforeach
@@ -56,14 +66,15 @@
         <tr class="basket-item">
             
             <th class="text-right" @if (basket()->hasPhysicalItems()) colspan="2" @endif >Item Total:</th>
-            <td class="text-right font-weight-bold">&pound;{{ number_format(basket()->itemTotal, 2) }}</td>
+            <td class="text-right font-weight-bold">&pound;{{ number_format(basket()->itemTotal(), 2) }}</td>
             <th></th>
+
         </tr>
 
     </tbody>
 
     <tfoot>
-        @if($svc = basket()->shipping_service)
+        @if($svc = basket()->getShippingService())
         <tr class="basket-item">
             <th class="text-right"
                 @if (basket()->hasPhysicalItems())
@@ -87,19 +98,19 @@
             @endif
             <th class="text-right" >Total:</th>
            
-            <th class="text-right">&pound;{{ number_format(basket()->total, 2) }}</th>
+            <th class="text-right">&pound;{{ number_format(basket()->totalValue(), 2) }}</th>
             <th></th>
         </tr>
     </tfoot>
 
     <tbody>
 
-
+{{-- 
         @foreach(basket()->offerUses()->get()->groupBy('offer_id') as $offer=>$uses)
 
            @include('checkout::basket.livewire.offerrow')
 
-        @endforeach
+        @endforeach --}}
 
     </tbody>
 

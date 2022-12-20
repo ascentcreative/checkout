@@ -3,10 +3,10 @@
 namespace AscentCreative\Checkout\Contracts;
 
 use AscentCreative\Checkout\Models\Shipping\Service;
-use AscentCreative\Checkout\Models\OrderBase;
+use AscentCreative\Checkout\Basket;
 
 interface ShippingCalculator {
 
-    static function getCost(Service $service, OrderBase $basket);
+    static function getCost(Service $service, Basket $basket);
 
 }

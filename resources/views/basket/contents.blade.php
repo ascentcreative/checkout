@@ -1,4 +1,4 @@
-@if (basket()->isEmpty)
+@if (basket()->isEmpty())
     <H2>Your basket is currently empty</H2>   
 @else
 
@@ -16,7 +16,7 @@
 
     <tbody>
 
-        @foreach(basket()->items()->get()->groupBy('sku') as $item)
+        @foreach(basket()->items()->groupBy('sku') as $item)
         <tr class='basket-item'>
             
             {{-- @dd($item) --}}
@@ -44,7 +44,7 @@
             @endif
             <th class="text-right" >Total:</th>
            
-            <th class="text-right">&pound;{{ number_format(basket()->total, 2) }}</th>
+            <th class="text-right">&pound;{{ number_format(basket()->totalValue(), 2) }}</th>
             <th></th>
         </tr>
     </tfoot>

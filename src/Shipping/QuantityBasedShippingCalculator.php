@@ -6,12 +6,12 @@ use AscentCreative\Checkout\Contracts\ShippingCalculator;
 
 use AscentCreative\Checkout\Models\Shipping\WeightBand;
 use AscentCreative\Checkout\Models\Shipping\Service;
-use AscentCreative\Checkout\Models\OrderBase;
+use AscentCreative\Checkout\Basket;
 
 class QuantityBasedShippingCalculator implements ShippingCalculator {
 
 
-    static function getCost(Service $svc, OrderBase $basket) {
+    static function getCost(Service $svc, Basket $basket) {
 
         // ?Revised code
         // feels like we should get the list of the codes for the bands (whether fixed or SKU-based)
@@ -43,12 +43,12 @@ class QuantityBasedShippingCalculator implements ShippingCalculator {
 
        
         // get the 'shipper' for each item as this is the key for the actual bands.
-        $shippers = $basket->items()->with('sellable')->get()
+        $shippers = $basket->items() //->with('sellable')->get()
                         ->where('sellable.itemWeight', '=', 0)
                         ->groupBy('sellable.shipper.shipperKey')
                         ->map(function($items) {
                             return [
-                                'shipper' => $items[0]->sellable->shipper,
+                               'shipper' => $items[0]->sellable->shipper,
                                'qty' => $items->sum('qty'),
                             ];
                         });

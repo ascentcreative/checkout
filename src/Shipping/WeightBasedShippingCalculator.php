@@ -6,12 +6,12 @@ use AscentCreative\Checkout\Contracts\ShippingCalculator;
 
 use AscentCreative\Checkout\Models\Shipping\WeightBand;
 use AscentCreative\Checkout\Models\Shipping\Service;
-use AscentCreative\Checkout\Models\OrderBase;
+use AscentCreative\Checkout\Basket;
 
 class WeightBasedShippingCalculator implements ShippingCalculator {
 
 
-    static function getCost(Service $svc, OrderBase $basket) {
+    static function getCost(Service $svc, Basket $basket) {
 
         $weight = $basket->getTotalWeight();
 
@@ -21,7 +21,8 @@ class WeightBasedShippingCalculator implements ShippingCalculator {
         }
 
         // find the services which the products may use:
-        $shippers = $basket->items()->with('sellable')->get()
+        // $shippers = $basket->items()->with('sellable')->get()
+        $shippers = $basket->items()
                         ->where('sellable.itemWeight', '!=', 0)
                         ->pluck('sellable.shipper')
                         ->map(function($item) use ($svc) {

@@ -1,5 +1,6 @@
 <?php 
 use AscentCreative\Checkout\Models\Basket;
+use AscentCreative\Checkout\Basket as SessionBasket;
 
 /** 
  * Create a new basket in the session if we don't already have one. 
@@ -9,6 +10,13 @@ use AscentCreative\Checkout\Models\Basket;
  * This means the basket is only created in the session when we call it.
  */
 function basket() {
+
+    if(!session()->has('checkout_basket')) {
+        session()->put('checkout_basket', new SessionBasket);
+    }
+    return session('checkout_basket');
+
+
 
     $basketManager = AscentCreative\Checkout\BasketManager::getInstance();
 

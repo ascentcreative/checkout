@@ -6,11 +6,11 @@ use AscentCreative\Checkout\Contracts\ShippingCalculator;
 
 use AscentCreative\Checkout\Models\Shipping\WeightBand;
 use AscentCreative\Checkout\Models\Shipping\Service;
-use AscentCreative\Checkout\Models\OrderBase;
+use AscentCreative\Checkout\Basket;
 
 class DefaultShippingCalculator implements ShippingCalculator {
 
-    static function getCost(Service $svc, OrderBase $basket) {
+    static function getCost(Service $svc, Basket $basket) {
 
         $weight_based = WeightBasedShippingCalculator::getCost($svc, $basket);
 

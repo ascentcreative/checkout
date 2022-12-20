@@ -1,5 +1,5 @@
 <div class="basket-tab border bg-white p-3 mb-3" id="tab-details">
-@if(config('checkout.anonymous_checkout'))
+@if(config('checkout.anonymous_checkout') || auth()->user())
 
     <div class="flex flex-between">
     <H4>Your Details</H4>  
@@ -17,7 +17,7 @@
             
             <x-cms-form-input type="text" name="email" label="Email address:" wrapper="simple" value="{{ basket()->customer->email ?? '' }}" />
 
-            <x-cms-form-checkbox name="email_signup" label="Signup for email newsletters?" value="{{ 1 }}" uncheckedValue="0" wrapper="inline" labelPlacement="after" />
+            {{-- <x-cms-form-checkbox name="email_signup" label="Signup for email newsletters?" value="{{ 1 }}" uncheckedValue="0" wrapper="inline" labelPlacement="after" /> --}}
 
             <div class="text-right">
                 <button class="btn button btn-primary btn-sm">Next</button>
@@ -41,11 +41,12 @@
 
 @else 
 
-    {{-- Need user to login --}}
-    Login
+    {{-- Anonymous Checkout disallowed and no current user - need user to login --}}
+    @include('auth.loginform')
 
 @endif
 </div>
+
 
 @if(basket()->hasPhysicalItems()) 
 
@@ -67,7 +68,7 @@
 
                 {{-- Country Selector --}}
                 <x-cms-form-foreignkeyselect type="select" label="Select your country" labelField="name" name="address[country_id]" 
-                    :query="\AscentCreative\Geo\Models\Country::orderBy('is_common', 'desc')" :value="basket()->address()->first()->country_id ?? ''" wrapper="simple">
+                    :query="\AscentCreative\Geo\Models\Country::orderBy('is_common', 'desc')" :value="basket()->getShippingAddress()->country_id ?? ''" wrapper="simple">
                     <x-slot name="attr">
                         wire:change="setShippingCountry($event.target.value)"
                     </x-slot>
@@ -75,11 +76,10 @@
 
             
                 {{-- Shipment Type --}}
-                @if(basket()->address()->first()->country_id)
+                @if(basket()->getShippingAddress()->country_id)
 
-                    <x-cms-form-blockselect name="shipping_service_id" label="Choose Shipping Method:" :value="basket()->shipping_service->id ?? ''"
-                        {{-- :options="collect(app('checkout:shippingcalculator')::getQuotes($country))" --}}
-                        :options="basket()->getShippingQuotes(basket()->address->country_id)"
+                    <x-cms-form-blockselect name="shipping_service_id" label="Choose Shipping Method:" :value="basket()->getShippingService()->id ?? ''"
+                        :options="basket()->getShippingQuotes()"
                         blockblade="checkout::basket.blockselect.shipping"
                         optionKeyField="id"
                         maxSelect="1" wrapper="simple" columns="1">
@@ -87,14 +87,15 @@
       
                 @endif
 
-                @if(basket()->needs_address)
+                @if(basket()->needsAddress())
                     {{-- Address (if needed) --}}
                     <label>Shipping Address:</label>
-                    <x-cms-form-input type="text" name="address[street1]" label="" placeholder="Address line 1" :value="basket()->address->street1 ?? ''" wrapper="simple"/>
-                    <x-cms-form-input type="text" name="address[street2]" label="" placeholder="Address line 2" :value="basket()->address->street2 ?? ''" wrapper="simple"/>
-                    <x-cms-form-input type="text" name="address[city]" label="" placeholder="City" :value="basket()->address->city ?? ''" wrapper="simple"/>
-                    <x-cms-form-input type="text" name="address[state]" label="" placeholder="County" :value="basket()->address->state ?? ''" wrapper="simple"/>
-                    <x-cms-form-input type="text" name="address[zip]" label="" placeholder="Postcode / Zip" :value="basket()->address->zip ?? ''" wrapper="simple"/>
+                    @php $addr = basket()->getShippingAddress(); @endphp
+                    <x-cms-form-input type="text" name="address[street1]" label="" placeholder="Address line 1" :value="$addr->street1 ?? ''" wrapper="simple"/>
+                    <x-cms-form-input type="text" name="address[street2]" label="" placeholder="Address line 2" :value="$addr->street2 ?? ''" wrapper="simple"/>
+                    <x-cms-form-input type="text" name="address[city]" label="" placeholder="City" :value="$addr->city ?? ''" wrapper="simple"/>
+                    <x-cms-form-input type="text" name="address[state]" label="" placeholder="County" :value="$addr->state ?? ''" wrapper="simple"/>
+                    <x-cms-form-input type="text" name="address[zip]" label="" placeholder="Postcode / Zip" :value="$addr->zip ?? ''" wrapper="simple"/>
 
                 @endif
 
@@ -107,6 +108,8 @@
         @else
 
             {{-- Shipping Info.... --}}
+
+            {{ basket()->getShippingAddress()->stringify(', ') }}
 
         @endif
 
@@ -169,9 +172,11 @@
          });
     });
 
+    {{--
     $(document).on('transact-success', function() {
         window.location = '/basket/orderconfirmed/{{ basket()->uuid }}';
     });
+    --}}
    
 
 

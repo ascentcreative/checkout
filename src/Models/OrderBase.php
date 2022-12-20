@@ -97,7 +97,6 @@ class OrderBase extends Base
     }
 
 
-
     public function getTotalWeight() {
 
         $ttl = 0;

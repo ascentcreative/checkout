@@ -36,9 +36,13 @@ class BasketManager {
             $this->basket = new Basket();
         } else {
             $this->basket = Basket::where('id', session('checkout_basket_id'))->with('items')->with('items.sellable')->with('customer')->first();
+           
             if($this->basket == null) {
                 $this->basket = new Basket();
             }
+
+            $this->items = $this->basket->items;
+            dump($this->items);
         }
 
     }

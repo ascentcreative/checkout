@@ -39,6 +39,10 @@ class Checkout extends Component
         if(!basket()->hasPhysicalItems()) {
             unset($this->tab_status['shipping']);
         }
+        if(auth()->user()) {
+            $this->tab_status['details'] = 'complete'; 
+            $this->current_tab = basket()->hasPhysicalItems() ? 'shipping' : 'payment';
+        }
     }
 
     public function setCode($data) {
@@ -72,21 +76,24 @@ class Checkout extends Component
 
     public function setShippingCountry($data) {
        
+        // dd($data);
+
         $this->country = $data;
         // dump(basket()->id);
         // dd(basket()->address);
 
-        $addr = basket()->address()->first();
-        $addr->country_id = $data;
+        // $addr = basket()->address()->first();
+        $addr = basket()->getShippingAddress()->country_id = $data;
+        // $addr->country_id = $data;
         // ->country_id = $data;
-        basket()->address()->save($addr);
+        // basket()->address()->save($addr);
 
     }
 
     public function setShippingService($svc) {
         // dump($svc);
-        basket()->shipping_service()->associate(Service::find($svc));
-        basket()->save();
+        basket()->setShippingService(Service::find($svc));
+        // basket()->save();
 
     }
 
@@ -102,7 +109,7 @@ class Checkout extends Component
             'shipping_service_id'=>'required'
         ];
 
-        if(basket()->needs_address) {
+        if(basket()->needsAddress()) {
 
             $rules = array_merge(
                 $rules,
@@ -116,8 +123,8 @@ class Checkout extends Component
          // validate:
          Validator::make($data,$rules)->validate();
 
-        basket()->address->fill($data['address']);
-        basket()->address->save();
+        basket()->getShippingAddress()->fill($data['address']);
+        // basket()->address->save();
         
 
         // set the next tab:
