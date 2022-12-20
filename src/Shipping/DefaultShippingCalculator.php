@@ -12,9 +12,9 @@ class DefaultShippingCalculator implements ShippingCalculator {
 
     static function getCost(Service $svc, Basket $basket) {
 
-        $weight_based = WeightBasedShippingCalculator::getCost($svc, $basket);
+        $weight_based =  WeightBasedShippingCalculator::getCost($svc, $basket);
 
-        $qty_based = QuantityBasedShippingCalculator::getCost($svc, $basket);
+        $qty_based =  QuantityBasedShippingCalculator::getCost($svc, $basket);
 
         // dump($svc);
         // dump($weight_based);

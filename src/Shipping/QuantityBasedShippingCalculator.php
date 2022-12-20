@@ -44,7 +44,8 @@ class QuantityBasedShippingCalculator implements ShippingCalculator {
        
         // get the 'shipper' for each item as this is the key for the actual bands.
         $shippers = $basket->items() //->with('sellable')->get()
-                        ->where('sellable.itemWeight', '=', 0)
+                        ->where('item_weight', '=', 0)
+                        ->unique() // important for scalability
                         ->groupBy('sellable.shipper.shipperKey')
                         ->map(function($items) {
                             return [

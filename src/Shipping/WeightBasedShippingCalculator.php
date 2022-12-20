@@ -23,11 +23,14 @@ class WeightBasedShippingCalculator implements ShippingCalculator {
         // find the services which the products may use:
         // $shippers = $basket->items()->with('sellable')->get()
         $shippers = $basket->items()
-                        ->where('sellable.itemWeight', '!=', 0)
+                        ->where('item_weight', '!=', 0)
+                        ->unique()  // important for scalability
                         ->pluck('sellable.shipper')
                         ->map(function($item) use ($svc) {
                             return $item->getAllowedSubservicesAttribute($svc)->pluck('id');
                         }); //.allowedSubservices');
+
+        // dd('shiipper')
 
         $ids = $shippers[0];
         for($i = 1; $i < $shippers->count(); $i++) {

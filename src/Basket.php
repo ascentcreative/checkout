@@ -259,14 +259,22 @@ class Basket {
     public function commit() : BasketModel {
 
         $order = new BasketModel();
+        $order->shipping_service()->associate($this->_shippingService);
         $order->save();
-
-    
 
         // rollup order items
         $grouped = $this->_items->groupBy('group_key');
 
         dump($grouped);
+
+        foreach($grouped as $group) {
+            $item = $group[0]->toArray();
+            $item['qty'] = $group->count();
+            $out = $order->items()->create($item);
+            if($item['offer_id']) {
+                $out->offers()->attach(\AscentCreative\Offer\Models\Offer::find($item['offer_id']));
+            }
+        }
 
 
         // $order->items()->createMany($this->_items->map(function($value) { 
