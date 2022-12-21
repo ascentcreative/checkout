@@ -5,8 +5,6 @@
 
 <div id="basket-contents">
 
-    {{ basket()->uuid; }}
-
 <table class="basket-table">
     <thead>
         <tr>
