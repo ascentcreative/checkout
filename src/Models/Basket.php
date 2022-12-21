@@ -328,9 +328,13 @@ class Basket extends OrderBase implements iTransactable
         // // repoint the transaction to the order model.
         // // (Thinking this split model idea was a mistake...)
         $order = Order::find($this->id);
-        $txn = $this->transaction;
-        $txn->transactable()->associate($order);
-        $txn->save();
+        $txns = $this->transactions;
+        foreach($txns as $txn) {
+            $txn->transactable()->associate($order);
+            $txn->save();
+        }
+        // $order->transactions()->associate($txns);
+        // $order->save();
 
         // do the same for the address:
         $addr = $this->address;
