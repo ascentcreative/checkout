@@ -45,9 +45,9 @@ class Order extends OrderBase
         return $this->hasMany(OrderItem::class);
     }
 
-    public function transactions() {
-        return $this->morphMany(Transaction::class, 'transactable');
-    }
+    // public function transactions() {
+    //     return $this->morphMany(Transaction::class, 'transactable');
+    // }
 
 
     /**
@@ -78,7 +78,7 @@ class Order extends OrderBase
 
     public function getTransactionLast4Attribute() {
 
-        $t = $this->transactions->first();
+        $t = $this->transactions()->latest()->first();
         if ($t) {
             return $t->last4;
         } else {
@@ -90,7 +90,7 @@ class Order extends OrderBase
    
     public function getTransactionRefAttribute() {
 
-        $t = $this->transactions->first();
+        $t = $this->transactions()->latest()->first();
         if ($t) {
             //return json_decode($t->data)->id;
             return json_decode($t->data)->data->object->charges->data[0]->id;
