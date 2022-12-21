@@ -114,8 +114,8 @@ class OrderItem extends Base
     public function getGroupKeyAttribute() {
         $array = [
             $this->sku,
-            // $this->offer->first()->id ?? '-',
-            // $this->itemPrice,
+            $this->offer->first()->id ?? '-',
+            $this->itemPrice,
         ];
         return join('_', $array);
     }

@@ -104,7 +104,7 @@
                 <th colspan="3" class="text-right">Shipping - {{ $svc->title ?? ''}}:</th>
                 <th></th>
                 <th class="text-right">
-                    @if(($ship = $svc->getCost($model)) == 0)
+                    @if(($ship = $model->shipping_cost) == 0)
                         FREE
                     @else
                         &pound;{{ number_format($ship ?? 'FREE', 2) }}

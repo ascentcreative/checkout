@@ -39,7 +39,7 @@
             
             <td class="title" xxwidth="100%">{{ $item->customer->name }}</td>
 
-            <td class="title text-right" xwidth="100%">{{ $item->items->count() }}</td>
+            <td class="title text-right" xwidth="100%">{{ $item->items->sum('qty') }}</td>
 
             <td class="title text-right" >&pound;{{ number_format($item->total, 2) }}</a></td>
 

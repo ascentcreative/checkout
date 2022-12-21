@@ -29,9 +29,12 @@ Route::middleware(['web'])->group(function () {
         // basket()->clear();
 
         // dump(basket()->getShippingQuotes());
+        // dump(basket());
         basket()->commit();
 
-        dump(basket());
+        // dump(\AscentCreative\Transact\Transact::start(basket()->commit()));
+
+        
         // $item = App\Models\Product::find(462);
 
         // basket()->add($item, 1);

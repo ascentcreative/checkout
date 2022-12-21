@@ -5,27 +5,37 @@ use AscentCreative\Checkout\Models\Shipping\Service;
 
 use AscentCreative\Checkout\Models\OrderItem;
 use AscentCreative\Checkout\Models\Basket as BasketModel;
+use AscentCreative\Checkout\Models\Order;
 use AscentCreative\Checkout\Contracts\Sellable;
 
 use AscentCreative\Checkout\BasketItem;
+
+use Illuminate\Support\Str;
 
 use AscentCreative\Checkout\Events\BasketUpdated;
 
 class Basket {
 
-    public $_items = null;
+    public $_items = [];
 
     private $_codes = [];
 
     private $_address;
     private $_shippingService;
+    private $_shipping_cost;
 
-    private $_customer;
+    public $uuid;
+
+    // private $customer;
 
     public $consumable = ['countAll', 'summary'];
 
     public function __construct() {
+        $this->uuid = Str::uuid();
         $this->_items = collect([]);
+        if(auth()->user()) {
+            $this->customer = auth()->user();
+        }
     }
 
     /**
@@ -71,6 +81,7 @@ class Basket {
             $this->_items->push($item);
         }
 
+    
         BasketUpdated::dispatch($this);
 
         return true;
@@ -96,6 +107,12 @@ class Basket {
 
         $this->_items = $this->_items->except($forgettable->keys());
 
+        // if there's no physical items, ditch any shpping service that may have been previously assigned:
+        if(!$this->hasPhysicalItems()) {
+            $this->setShippingService(null);
+        }
+
+
         BasketUpdated::dispatch($this);
 
         return true;
@@ -103,7 +120,8 @@ class Basket {
     }
 
     public function clear() {
-        $this->_items = collect([]);
+        // $this->_items = collect([]);
+        basket(true);
     }
 
     public function setQuantityByKey($key, $qty) {
@@ -155,9 +173,10 @@ class Basket {
     }
 
     public function shippingTotal() {
-        if($this->_shippingService) {
-           return $this->_shippingService->getCost($this);
-        }
+        return $this->_shipping_cost;
+        // if($this->_shippingService) {
+        //    return $this->_shippingService->getCost($this);
+        // }
     }
 
 
@@ -191,6 +210,12 @@ class Basket {
 
     public function setShippingService(Service $svc=null) {
         $this->_shippingService = $svc;
+        if($svc) {
+            $this->_shipping_cost = $svc->getCost($this) ?? null;
+        } else {
+            $this->_shipping_cost = null;
+        }
+
         return $this;
     }
     
@@ -251,6 +276,17 @@ class Basket {
     }
 
 
+    public function canCommit() {
+        if(
+            count($this->_items) == 0
+           || ($this->hasPhysicalItems() && is_null($this->_shippingService))
+           || ($this->hasPhysicalItems() && is_null($this->_address)) // this should be a check that we have a full address, not just a country
+          )
+            return false;
+
+        return true;
+    }
+
 
     /**
      * Writes the basket and associated models to the database:
@@ -258,14 +294,55 @@ class Basket {
      */
     public function commit() : BasketModel {
 
-        $order = new BasketModel();
+        // pre-commit checks:
+
+        // is the basket in a committable state?
+        //  - i.e. has items, customer, shipping svc (if needed)?
+        if (!$this->canCommit()) {
+            throw new \Exception("Basket cannot be committed yet");
+        }
+
+        // - does a paid order exist? If so, prevent commit
+        if(Order::where('uuid', $this->uuid)->exists()) {
+            throw new \Exception("Basket has been paid");
+        }
+        
+        // - does an unpaid order exist, with an open transaction (i.e. not paid and not failed)
+        //      - if so, prevent commit. 
+        if(BasketModel::where('uuid', $this->uuid)->whereHas('transaction', function($q) {
+            $q->whereNull('paid_at')->where('failed', 0);
+        })->exists()) {
+            throw new \Exception("Basket is processing");
+        }
+
+        // - does an unpaid basket exist? (i.e. all transactions are marked as failed)
+        //      - Should be treated as dirty data as user may have changed order since last commit
+        //      - sync data into existing basket (probably by deleting a recreating records)
+        $order = BasketModel::where('uuid', $this->uuid)->first();
+
+        if($order) {
+            $order->items()->each(function($item) {
+                $item->delete();
+            });
+            $order->address()->delete();
+            $order->customer()->detach();
+        } else {
+            $order = new BasketModel();
+        }
+
+        // - otherwise, create fresh
+
+        $order->fill([
+            'shipping_cost'=>$this->_shipping_cost,
+            'uuid'=> $this->uuid,
+        ]);
         $order->shipping_service()->associate($this->_shippingService);
         $order->save();
 
         // rollup order items
         $grouped = $this->_items->groupBy('group_key');
 
-        dump($grouped);
+        // dump($grouped);
 
         foreach($grouped as $group) {
             $item = $group[0]->toArray();
@@ -276,14 +353,8 @@ class Basket {
             }
         }
 
-
-        // $order->items()->createMany($this->_items->map(function($value) { 
-        //         return $value->toArray();
-        //     })
-        // );
-
         $order->address()->create($this->_address->toArray());
-
+        
         return $order;
        
 

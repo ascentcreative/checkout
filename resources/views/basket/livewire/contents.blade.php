@@ -5,6 +5,8 @@
 
 <div id="basket-contents">
 
+    {{ basket()->uuid; }}
+
 <table class="basket-table">
     <thead>
         <tr>
@@ -82,7 +84,8 @@
                 @endif
              >Shipping - {{ $svc->title ?? ''}}:</th>
             <th class="text-right">
-                @if(($ship = $svc->cost) == 0)
+                {{-- @if(($ship = basket()->shippingTotal()) == 0) --}}
+                @if(($ship = $svc->cost) == 0) 
                     FREE
                 @else
                     &pound;{{ number_format($ship ?? 'FREE', 2) }}</th>

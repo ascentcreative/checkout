@@ -172,12 +172,11 @@
          });
     });
 
-    {{--
+    
     $(document).on('transact-success', function() {
         window.location = '/basket/orderconfirmed/{{ basket()->uuid }}';
     });
-    --}}
-   
+    
 
 
     // a function to run when the payment completes

@@ -18,6 +18,9 @@ class BasketController extends Controller
 
         headTitle()->add("Your Basket");
 
+        // check if basket is currently processing
+        // if so, redirect to a warning page.
+
         if(config('checkout.livewire_checkout')) {
             return view('checkout::basket.livewire.show');
         } else {

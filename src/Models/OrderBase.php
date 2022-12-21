@@ -17,6 +17,8 @@ class OrderBase extends Base
 {
     use HasFactory, Discountable;
 
+    public $fillable = ['shipping_cost', 'uuid'];
+
 
     public function items() {
         return $this->hasMany(OrderItem::class, 'order_id')->with('sellable');
@@ -51,7 +53,8 @@ class OrderBase extends Base
         $total = 0;
         $total += $this->itemTotal;
         if($this->shipping_service) {
-            $total += $this->shipping_service->getCost($this);
+            // $total += $this->shipping_service->getCost($this);
+            $total += $this->shipping_cost;
         }
 
         $total += $this->offerUses()->sum('value');
