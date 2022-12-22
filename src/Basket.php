@@ -265,11 +265,10 @@ class Basket {
      * @return [type]
      */
     public function summary() {
-        return '123';
         $count = $this->countAll();
 
         if($this->countAll() > 0) {
-            return ''; //$count . ' item' . ($count>1?'s':'') . ', &pound;' . number_format($this->totalValue(), 2);
+            return $count . ' item' . ($count>1?'s':'') . ', &pound;' . number_format($this->totalValue(), 2);
         } else {
             return 'Basket: Empty';
         }
