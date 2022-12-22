@@ -68,7 +68,8 @@
 
                 {{-- Country Selector --}}
                 <x-cms-form-foreignkeyselect type="select" label="Select your country" labelField="name" name="address[country_id]" 
-                    :query="\AscentCreative\Geo\Models\Country::orderBy('is_common', 'desc')" :value="basket()->getShippingAddress()->country_id ?? ''" wrapper="simple">
+                    :query="\AscentCreative\Geo\Models\Country::orderBy('is_common', 'desc')" 
+                    :value="basket()->getShippingAddress()->country_id ?? ''" wrapper="simple">
                     <x-slot name="attr">
                         wire:change="setShippingCountry($event.target.value)"
                     </x-slot>
@@ -78,11 +79,22 @@
                 {{-- Shipment Type --}}
                 @if(basket()->getShippingAddress()->country_id)
 
-                    <x-cms-form-blockselect name="shipping_service_id" label="Choose Shipping Method:" :value="basket()->getShippingService()->id ?? ''"
-                        :options="basket()->getShippingQuotes()"
+                    @php 
+                        $quotes = basket()->getShippingQuotes();
+                        // if there's only one quote, select it.
+                        if(count($quotes) == 1) {
+                            basket()->setShippingService($quotes[0]);
+                        } 
+                    @endphp
+
+                    <x-cms-form-blockselect :readonly="true" name="shipping_service_id" label="Choose Shipping Method:" 
+
+                        :value="basket()->getShippingService()->id ?? ''"
+                        :options="$quotes"
                         blockblade="checkout::basket.blockselect.shipping"
                         optionKeyField="id"
                         maxSelect="1" wrapper="simple" columns="1">
+
                     </x-cms-form-blockselect>
       
                 @endif
