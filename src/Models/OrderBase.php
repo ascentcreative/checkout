@@ -57,6 +57,7 @@ class OrderBase extends Base
             $total += $this->shipping_cost;
         }
 
+        // redundant?
         $total += $this->offerUses()->sum('value');
 
         return $total;
