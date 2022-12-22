@@ -200,7 +200,7 @@ class Basket {
     public function getShippingQuotes() {
 
         // dd(Service::forCountry($country)->get()->whereNotNull('cost'));
-        if(!$this->_address->country_id) {
+        if(!$this->_address || !$this->_address->country_id) {
             return [];
         }
 

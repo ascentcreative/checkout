@@ -13,6 +13,8 @@ class Checkout extends Component
 {
 
     public $current_tab = 'details';
+
+    public $shipping_quotes = [];
 // 
     // public $current_tab = 'shipping';
     
@@ -43,6 +45,8 @@ class Checkout extends Component
             $this->tab_status['details'] = 'complete'; 
             $this->current_tab = basket()->hasPhysicalItems() ? 'shipping' : 'payment';
         }
+
+        $this->shipping_quotes = basket()->getShippingQuotes();
     }
 
     public function setCode($data) {
@@ -77,6 +81,9 @@ class Checkout extends Component
     public function setShippingCountry($data) {
        
         // dd($data);
+        // @php 
+       
+    // @endphp
 
         $this->country = $data;
         // dump(basket()->id);
@@ -84,6 +91,13 @@ class Checkout extends Component
 
         // $addr = basket()->address()->first();
         $addr = basket()->getShippingAddress()->country_id = $data;
+
+
+        $this->shipping_quotes = basket()->getShippingQuotes();
+        // if there's only one quote, select it.
+        if(count($this->shipping_quotes) == 1) {
+            basket()->setShippingService($this->shipping_quotes[0]);
+        } 
         // $addr->country_id = $data;
         // ->country_id = $data;
         // basket()->address()->save($addr);

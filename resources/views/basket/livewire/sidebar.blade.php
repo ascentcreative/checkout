@@ -79,18 +79,10 @@
                 {{-- Shipment Type --}}
                 @if(basket()->getShippingAddress()->country_id)
 
-                    @php 
-                        $quotes = basket()->getShippingQuotes();
-                        // if there's only one quote, select it.
-                        if(count($quotes) == 1) {
-                            basket()->setShippingService($quotes[0]);
-                        } 
-                    @endphp
-
                     <x-cms-form-blockselect :readonly="true" name="shipping_service_id" label="Choose Shipping Method:" 
 
                         :value="basket()->getShippingService()->id ?? ''"
-                        :options="$quotes"
+                        :options="$shipping_quotes"
                         blockblade="checkout::basket.blockselect.shipping"
                         optionKeyField="id"
                         maxSelect="1" wrapper="simple" columns="1">
