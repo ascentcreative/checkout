@@ -130,6 +130,12 @@ Route::middleware(['web'])->group(function () {
         Route::get('/orders/{order}/delete', [AscentCreative\Checkout\Controllers\Admin\OrderController::class, 'delete']);
         Route::resource('/orders', OrderController::class);
 
+        Route::get('/orders/{order}/logshipment', function(Order $order) {
+            return view('checkout::admin.orders.modal.logshipment', ['order'=>$order]);
+        })->name('checkout.orders.logshipment');
+
+        Route::post('/orders/{order}/logshipment', [AscentCreative\Checkout\Controllers\Admin\OrderController::class, 'logShipment']);
+
         Route::get('/sellables/autocomplete', function() {
 
             // dd();

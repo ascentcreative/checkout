@@ -48,8 +48,30 @@
 
 </div>
 
-<div class="cms-screenblock bg-white rounded shadow" style="">
 
+<div class="cms-screenblock cms-screenblock-tabs bg-white rounded shadow" style="">
+
+    <ul class="nav nav-tabs px-3 pt-3 bg-light" id="myTab" role="tablist">
+
+        <li class="nav-item">
+            <a class="nav-link" id="items-tab" data-toggle="tab" href="#items-pane" role="items" aria-controls="items-pane" aria-selected="false">Items</a>
+          </li>
+
+        @if($model->hasPhysicalItems())
+       
+        <li class="nav-item">
+          <a class="nav-link" id="shipments-tab" data-toggle="tab" href="#shipments-pane" role="shipments" aria-controls="shipments-pane" aria-selected="false">Shipments</a>
+        </li>
+
+        @endif
+
+       
+      </ul>
+
+      <div class="tab-content" id="tabs">
+
+        <div class="tab-pane p-3" id="items-pane" role="tabpanel" aria-labelledby="items-tab">
+           
     <table class="table table-hover">
 
         <thead>
@@ -137,6 +159,77 @@
 
 
     </table>
+
+        </div>
+
+        @if($model->hasPhysicalItems())
+
+        <div class="tab-pane p-3" id="shipments-pane" role="tabpanel" aria-labelledby="shipments-tab">
+
+            {{-- @dump($model->countUnshippedItems()) --}}
+
+            @if($model->hasUnshippedItems())
+            <h4>Unshipped Items</h4>
+
+            <table class="table table-hover">
+
+                <thead>
+        
+                    <th>Item</th>
+                    <th width="100" class="text-right">Qty</th>
+                    
+                </thead>
+
+                <tbody>
+
+                    @foreach($model->getUnshippedItems() as $item) 
+                    <tr>
+                        <td class="font-weight-bold">{{ $item->sellable->title }}</td>
+                        <td class="text-right">{{ $item->qty }}</td>
+                    </tr>
+                    @endforeach
+
+                </tbody>
+
+            </table>
+            @endif
+
+
+            @foreach($model->shipments as $shipment) 
+
+                <h4>{{ $shipment->shipping_date }}</h4>
+                <div>{{ $shipment->shipper->name ?? '' }} @if($shipment->tracking_number) - Tracking: {{ $shipment->tracking_number }} @endif </div>
+
+                <table class="table table-hover">
+
+                    <thead>
+            
+                        <th>Item</th>
+                        <th width="100" class="text-right">Qty</th>
+                        
+                    </thead>
+
+                    <tbody>
+
+                        @foreach($shipment->items as $item) 
+                        <tr>
+                            <td class="font-weight-bold">{{ $item->sellable->title }}</td>
+                            <td class="text-right">{{ $item->qty }}</td>
+                        </tr>
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+            
+
+            @endforeach
+
+
+        </div>
+
+        @endif
+                
 
 </div>
 

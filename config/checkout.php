@@ -30,6 +30,8 @@ return [
     'order_confirmation' => 'checkout::order.markdown.confirmation',
     'order_notification' => 'checkout::order.markdown.notification',
 
+    'shipment_notification' => 'checkout::shipment.markdown.notification',
+
     // Recipients:
     'order_notify' => '',
 

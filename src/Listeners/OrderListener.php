@@ -8,8 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 
 use AscentCreative\Checkout\Events\OrderConfirmed;
+use AscentCreative\Checkout\Events\OrderShipment;
+
 use AscentCreative\Checkout\Notifications\OrderConfirmation;
 use AscentCreative\Checkout\Notifications\OrderNotification;
+use AscentCreative\Checkout\Notifications\ShipmentNotification;
 
 use Illuminate\Support\Facades\Log;
 
@@ -63,4 +66,38 @@ class OrderListener
         }
 
     }
+
+
+
+     /**
+     * Send Email to the customer:
+     *
+     * @param  object  $event
+     * @return void
+     */
+    public function handleShipment(OrderShipment $event)
+    {
+
+        try {
+     
+            Notification::send($event->shipment->order->customer, new ShipmentNotification($event->shipment));      
+            
+            // $recips = config('checkout.order_notify');
+            // if(!is_array($recips)) {
+            //     if ($recips == '') {
+            //         return 'No recipients';
+            //     } else {
+            //         $recips = [$recips];
+            //     }
+            // }
+            
+            // Notification::route("mail", $recips)
+            //                 ->notify(new OrderNotification($event->order));
+                        
+        } catch (\Exception $e) {
+            \Log::error('Error sending emails - ' . $e->getMessage());
+        }
+
+    }
+
 }

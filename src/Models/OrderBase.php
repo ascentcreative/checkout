@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 
 Use AscentCreative\Checkout\Models\Base;
 Use AscentCreative\Checkout\Models\Shipping\Service;
+Use AscentCreative\Checkout\Models\Shipping\Shipment;
+Use AscentCreative\Checkout\Models\Shipping\ShipmentItem;
 Use AscentCreative\Geo\Traits\HasAddress;
 
 use AscentCreative\Offer\Traits\Discountable;
@@ -19,9 +21,17 @@ class OrderBase extends Base
 
     public $fillable = ['shipping_cost', 'uuid'];
 
+    private $_items = null;
 
     public function items() {
         return $this->hasMany(OrderItem::class, 'order_id')->with('sellable');
+    }
+
+    public function getItemsAttribute() {
+        if(is_null($this->_items)) {
+            $this->_items = $this->items()->get();
+        }
+        return $this->_items;
     }
 
     public function customer() {
@@ -64,18 +74,85 @@ class OrderBase extends Base
     }
 
     public function hasPhysicalItems() {
-        
-        foreach($this->items()->with('sellable')->get() as $item) {
+        return $this->countPhysicalItems() > 0;
+    }
 
-            if ($item->sellable->isPhysical()) {
-                return true;
-            }
+    public function countPhysicalItems() {   
+        return $this->getPhysicalItems()->count();
+    }
 
-        }
+    public function physicalItemQuantity() {
+        return $this->getPhysicalItems()->sum('qty');
+    }
 
-        return false;
+    public function getPhysicalItems() {
+        return $this->items->where('sellable.is_physical', 1);
+    }
+
+
+
+    public function shipments() {
+        return $this->hasMany(Shipment::class)->with('items');
+    }
+
+    public function getUnshippedItems() {
+
+        $ordered = $this->getPhysicalItems()->groupBy('morph_key')
+                        ->transform(function($item) {
+                            return $item->sum('qty');
+                        });
+
+        $withSellable = $this->getPhysicalItems()->groupBy('morph_key')
+        ->transform(function($item) {
+            return (object) [
+                'sellable' => $item->first()->sellable,
+                'sellable_type' => $item->first()->sellable_type,
+                'sellable_id' => $item->first()->sellable_id,
+                'qty' => $item->sum('qty'),
+            ];
+        });
+
+        // dump(collect($withSellable));
+
+        $shipped = $this->shippedItems->groupBy('morph_key')
+                        ->transform(function($item) {
+                            return $item->sum('qty');
+                        });
+
+        $unshipped = $withSellable->filter(function($item, $key) use ($shipped) {
+            return $item->qty > ($shipped[$key] ?? 0);
+        })->transform(function($item, $key) use ($shipped) {
+            $item->qty -= ($shipped[$key] ?? 0);
+            return $item;
+        })->toArray();
+
+        // dump($unshipped);
+
+        $this->_unshippedItems = collect($unshipped);
+        return $this->_unshippedItems;
 
     }
+
+    public function countUnshippedItems() {
+        return $this->getUnshippedItems()->sum('qty');
+    }
+
+    public function hasUnshippedItems() {
+        return $this->countUnshippedItems() > 0;
+    }
+
+    public function getShippedItems() {
+        return $this->shippedItems;
+    }
+
+    public function shippedItems() {
+        return $this->hasMany(ShipmentItem::class)->with('sellable');
+    }
+
+    public function hasShippedItems() {
+        return $this->shippedItems->count() > 0;
+    }
+
 
     public function getNeedsAddressAttribute() {
         
@@ -87,17 +164,41 @@ class OrderBase extends Base
 
 
     public function hasDownloadItems() {
+        return $this->countDownloadItems() > 0;
+    }
 
-        foreach($this->items()->with('sellable')->get() as $item) {
+    public function countDownloadItems() {
+        return $this->getDownloadItems()->count();
+    }
 
-            if ($item->sellable->isDownload()) {
-                return true;
-            }
+    public function getDownloadItems() {
+        $dls = $this->items->where('sellable.is_download', 1);
+        return $dls;
+    }
 
+
+    const UNPAID = 'ORDER_UNPAID';
+    const UNSHIPPED = 'ORDER_UNSHIPPED';
+    const PART_SHIPPED = 'ORDER_PART_SHIPPED';
+    const COMPLETE = 'ORDER_COMPLETE';
+
+    public function getStatusAttribute() {
+        if($this->confirmed != 1) {
+            return OrderBase::UNPAID;
         }
 
-        return false;
+        if($this->hasPhysicalItems()) {
+            if($this->hasUnshippedItems()) {
+                if($this->hasShippedItems()) {
+                    return OrderBase::PART_SHIPPED;
+                } else {
+                    return OrderBase::UNSHIPPED;
+                }
+            }
+            // return OrderBase::UNSHIPPED;
+        }
 
+        return OrderBase::COMPLETE;
     }
 
 
@@ -105,7 +206,7 @@ class OrderBase extends Base
 
         $ttl = 0;
 
-        foreach($this->items()->with('sellable')->get() as $item) {
+        foreach($this->items()->get() as $item) {
             $ttl += $item->sellable->itemWeight * $item->qty;
         }
 

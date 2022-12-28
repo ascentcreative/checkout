@@ -352,7 +352,9 @@ class Basket {
             }
         }
 
-        $order->address()->create($this->_address->toArray());
+        if($this->hasPhysicalItems()) {
+            $order->address()->create($this->_address->toArray());
+        }
         
         return $order;
        

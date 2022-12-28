@@ -11,6 +11,7 @@ use Illuminate\Auth\Events\Login;
 
 use AscentCreative\Checkout\Events\BasketUpdated;
 use AscentCreative\Checkout\Events\OrderConfirmed;
+use AscentCreative\Checkout\Events\OrderShipment;
 
 use AscentCreative\Checkout\Listeners\StripeBasketListener;
 use AscentCreative\Checkout\Listeners\OrderListener;
@@ -61,6 +62,11 @@ class EventServiceProvider extends ServiceProvider
         Event::listen(
             OrderConfirmed::class,
             [OrderListener::class, 'handleConfirmed']
+        );
+
+        Event::listen(
+            OrderShipment::class,
+            [OrderListener::class, 'handleShipment']
         );
         
     }
