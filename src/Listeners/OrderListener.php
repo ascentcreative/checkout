@@ -16,13 +16,8 @@ use AscentCreative\Checkout\Notifications\ShipmentNotification;
 
 use Illuminate\Support\Facades\Log;
 
-/**
- * Listens for user login events.
- *  - Primarily just assigns the user id to the open basket
- *  - May also need to scan contents for downloads previously bought etc (Not yet implemented)
- *  - Could even detect a user logging back in and restore an old basket... (Not yet implemented)
- */
-class OrderListener
+
+class OrderListener implements ShouldQueue
 {
     /**
      * Create the event listener.
