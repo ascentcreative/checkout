@@ -21,7 +21,7 @@ class OrderItem extends Base
     public $fillable = ['order_id', 'sellable_type', 'sellable_id', 'sku', 'qty', 'itemPrice', 'title'];
 
     public function sellable() {
-        return $this->morphTo();
+        return $this->morphTo(); //->withUnpublished();
     }
    
     public static function boot() {

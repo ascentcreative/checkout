@@ -56,6 +56,9 @@ class Order extends OrderBase
 
     public function getOrderNumberAttribute() { 
 
+        if($this->reference) {
+            return $this->reference;
+        }
         return Carbon::parse($this->confirmed_at)->format('my') . '-' . str_pad($this->id, 5, '0', STR_PAD_LEFT);
 
     }

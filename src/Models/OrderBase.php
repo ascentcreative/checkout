@@ -19,7 +19,7 @@ class OrderBase extends Base
 {
     use HasFactory, Discountable;
 
-    public $fillable = ['shipping_cost', 'uuid'];
+    public $fillable = ['id', 'shipping_cost', 'uuid', 'reference'];
 
     private $_items = null;
 

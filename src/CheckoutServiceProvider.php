@@ -199,6 +199,7 @@ class CheckoutServiceProvider extends ServiceProvider
     
     $this->bootDirectives();
     $this->bootComponents();
+    $this->bootCommands();
     $this->bootPublishes();
     $this->bootAssets();
 
@@ -260,6 +261,14 @@ class CheckoutServiceProvider extends ServiceProvider
       ]);
 
 
+    }
+
+
+    public function bootCommands() {
+        $this->commands([
+            \AscentCreative\Checkout\Commands\ObfuscateCustomers::class,
+            \AscentCreative\Checkout\Commands\ZendImport::class,
+        ]);
     }
 
 
