@@ -41,8 +41,10 @@
 
 @else 
 
+    <div wire:ignore>
     {{-- Anonymous Checkout disallowed and no current user - need user to login --}}
     @include('auth.loginform')
+    </div>
 
 @endif
 </div>
