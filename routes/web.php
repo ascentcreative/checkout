@@ -23,38 +23,6 @@ use AscentCreative\Checkout\Events\BasketUpdated;
 
 Route::middleware(['web'])->group(function () {
 
-    Route::get('/baskettest', function() {
-
-    
-        // basket()->clear();
-
-        // dump(basket()->getShippingQuotes());
-        // dump(basket());
-        basket()->commit();
-
-        // dump(\AscentCreative\Transact\Transact::start(basket()->commit()));
-
-        
-        // $item = App\Models\Product::find(462);
-
-        // basket()->add($item, 1);
-        // basket()->remove($item); //, 1); //, 500); //, 1);
-        
-        // BasketUpdated::dispatch(basket());
-
-        // dump(basket());
-
-        // dump(basket()->countOf($item));
-
-        // dump(basket()->countAll());
-
-        // dump(basket()->items()->groupBy('group_key'));
-
-    
-
-    });
-
-
     Route::get('/basket/add', function() {
         
     })->name('basket.add');
@@ -89,7 +57,7 @@ Route::middleware(['web'])->group(function () {
     Route::middleware(['auth'])->group(function () {
 
         Route::get('/checkout/orders', [AscentCreative\Checkout\Controllers\OrderController::class, 'index'])->name('checkout-all-orders');
-        Route::get('/checkout/orders/{order:uuid}', [AscentCreative\Checkout\Controllers\OrderController::class, 'show']);
+        Route::get('/checkout/orders/{order:uuid}', [AscentCreative\Checkout\Controllers\OrderController::class, 'show'])->name('checkout.order.show');
         Route::get('/checkout/orders/{order:uuid}/resend', function (Order $order) { 
             Notification::send($order->customer, new OrderConfirmation($order));   
         });
@@ -103,15 +71,7 @@ Route::middleware(['web'])->group(function () {
 
     });
 
-    Route::get('/hooktest', function() {
-
-       $basket = Basket::where("uuid", '=', '215b53b9-7605-4e5f-8762-3df9c4c2e1ac')->first();
-
-       $basket->confirmOrder();
-
-//       $order = Order::where("uuid", '=', '215b53b9-7605-4e5f-8762-3df9c4c2e1ac')->first();
-
-    });
+  
 
     /**
      * 'API' routes:
