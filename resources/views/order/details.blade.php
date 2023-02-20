@@ -16,11 +16,13 @@
         @php $sellable = $item->sellable()->withUnpublished()->first(); @endphp
         <tr class='basket-item'>
             <td width="100%">
-                @if($sellable = $item->sellable)
-                    <A href="{{ $sellable->url }}">
+                @if($sellable = $item->sellable) 
+                    @if($sellable->is_published)
+                        <A href="{{ $sellable->url }}">
+                    @endif
                 @endif
                 {{ $item->title }}
-                @if($sellable = $item->sellable)
+                @if($sellable->is_published)
                     </A>
                 @endif
             </td>
@@ -31,7 +33,7 @@
             </td>
             <td class="text-right">&pound;{{ number_format($item->itemPrice * $item->qty, 2) }}</td>
             <td>
-                @if ($sellable->isDownload())
+                @if ($sellable->isDownload() && $sellable->is_published)
                     <A href="{{ $item->getDownloadUrl() }}" class="bi-cloud-arrow-down-fill xmodal-link" style="font-size: 1.5rem; line-height: 1rem;" data-toggle="tooltip" title="Download File"></A>
                 @endif
             </td>
