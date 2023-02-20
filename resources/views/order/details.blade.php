@@ -1,6 +1,6 @@
 
 
-<table class="basket-table">
+<table class="table basket-table">
     <thead>
         <tr>
             <th>Item</th>
@@ -29,10 +29,10 @@
                     {{ $item->qty }} 
                 @endif
             </td>
-            <td class="text-right">&pound;{{ number_format($item->itemPrice, 2) }}</td>
+            <td class="text-right">&pound;{{ number_format($item->itemPrice * $item->qty, 2) }}</td>
             <td>
                 @if ($sellable->isDownload())
-                    <A href="{{ $item->getDownloadUrl() }}" class="bi-cloud-arrow-down-fill xmodal-link" style="font-size: 2rem; line-height: 1rem;" data-toggle="tooltip" title="Download File"></A>
+                    <A href="{{ $item->getDownloadUrl() }}" class="bi-cloud-arrow-down-fill xmodal-link" style="font-size: 1.5rem; line-height: 1rem;" data-toggle="tooltip" title="Download File"></A>
                 @endif
             </td>
         </tr>
@@ -42,9 +42,26 @@
 
     <tfoot>
         <tr>
+            <th colspan="2" class="text-right font-weight-bold">Item Total:</th>
+            <th class="text-right font-weight-bold">&pound;{{ number_format($order->itemTotal, 2) }}</th>
             <th></th>
-            <th class="text-right" >Total:</th>
-            <th class="text-right">&pound;{{ $order->total }}</th>
+        </tr>
+        @if($order->hasPhysicalItems())
+        <tr>
+            <th colspan="2" class="text-right">
+                Shipping:
+                @if($svc = $order->shipping_service) 
+                {{ $svc->title ?? ''}}
+               @endif
+
+            </th>
+            <th class="text-right">&pound;{{ number_format($order->shipping_cost, 2) }}</th>
+            <th></th>
+        </tr>
+        @endif
+        <tr>
+            <th colspan="2" class="text-right font-weight-bold">Total:</th>
+            <th class="text-right font-weight-bold">&pound;{{ number_format($order->total, 2) }}</th>
             <th></th>
         </tr>
     </tfoot>

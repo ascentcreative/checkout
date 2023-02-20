@@ -52,14 +52,18 @@ class ObfuscateCustomers extends Command
             return 1;
         }
 
-        $faker = \Faker\Factory::create();
+        $faker = \Faker\Factory::create(Customer::class, 4000);
 
         foreach(Customer::all() as $cust) {
-            $cust->update([
-                'name'=>$faker->name,
-                // ?'last_name'=>$faker->lastName,
-                'email'=>$faker->email,
-            ]);
+            try {
+                $cust->update([
+                    'name'=>$faker->name,
+                    // ?'last_name'=>$faker->lastName,
+                    'email'=>$faker->email,
+                ]);
+            } catch (\Exception $e) {
+                
+            }
         }
 
         return 0;

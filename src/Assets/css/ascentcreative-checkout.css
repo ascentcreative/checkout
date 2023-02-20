@@ -48,3 +48,7 @@ th:first-child, th:last-child {
  */
 
 
+.badge-ORDER_COMPLETE {
+    color: white;
+    background: var(--success);
+}

@@ -201,6 +201,25 @@ class OrderBase extends Base
         return OrderBase::COMPLETE;
     }
 
+    public function getStatusReadableAttribute() {
+
+        switch($this->status) {
+            case self::UNPAID:
+                return 'Unpaid';
+                break;
+            case self::UNSHIPPED:
+                return 'Awaiting Shipment';
+                break;
+            case self::PART_SHIPPED:
+                return 'Partially Shipped';
+                break;
+            case self::COMPLETE:
+                return 'Complete';
+                break;
+        }
+
+    }
+
 
     public function getTotalWeight() {
 

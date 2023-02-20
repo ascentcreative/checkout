@@ -93,7 +93,6 @@
                 <td>{{ $items[0]->offer->first()->alias ?? '' }}</td>
                 <td class="text-right">&pound;{{ number_format($items[0]->effectivePrice, 2) }}</td>
                 <td class="text-right">{{ $qty = $items->sum('qty') }}</td>
-                <td>{{ $items[0]->sellable->isPhysical() }}</td>
                 <td class="text-right">&pound;{{ number_format($items[0]->effectivePrice * $qty, 2) }}</td>
             </tr>
 

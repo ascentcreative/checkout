@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use AscentCreative\Checkout\Models\Order;
 use AscentCreative\Checkout\Models\OrderItem;
 use AscentCreative\Checkout\Models\Customer;
+use AscentCreative\Checkout\Models\Shipping\Shipment;
+use AscentCreative\Checkout\Models\Shipping\ShipmentItem;
 use AscentCreative\Store\Models\Product;
 use App\Models\User;
 
@@ -56,6 +58,9 @@ class ZendImport extends Command
         Order::truncate();
         Customer::truncate();
         OrderItem::truncate();
+        Shipment::truncate();
+        ShipmentItem::truncate();
+
 // return 0;
 
         $res = DB::connection('zend')->select('select * from store_order where status != "Precheckout"');      

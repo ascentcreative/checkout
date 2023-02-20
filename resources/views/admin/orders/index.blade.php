@@ -37,7 +37,7 @@
 
             <td class="title text-nowrap"><a href="{{ action([controller(), 'show'], [$modelInject => $item->id]) }}">{{$item->orderNumber}}</a></td>
 
-            <td class="text-nowrap">{{ $item->status }}</td>
+            <td class="text-nowrap"><div class="badge badge-{{ $item->status }}">{{ $item->status_readable }}</div></td>
 
             <td class="title text-nowrap">{{ $item->formatOrderDate('d F Y, H:i') }}</td>
             

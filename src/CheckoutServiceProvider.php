@@ -37,8 +37,8 @@ class CheckoutServiceProvider extends ServiceProvider
     });
 
     $this->registerRouteMacros();
-   
-  }
+
+    }
 
 
   /**
@@ -209,6 +209,10 @@ class CheckoutServiceProvider extends ServiceProvider
     $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
     $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+    packageAssets()->addStylesheet('/vendor/ascent/checkout/css/ascentcreative-checkout.css');
+    packageAssets()->addStylesheet('/vendor/ascent/checkout/css/ascentcreative-checkout-admin.css', 'admin');
+   
 
     
   }
