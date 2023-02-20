@@ -333,17 +333,17 @@ class Basket extends OrderBase implements iTransactable
             $txn->transactable()->associate($order);
             $txn->save();
         }
-        // $order->transactions()->associate($txns);
-        // $order->save();
+        
 
-        // do the same for the address:
+        // do the same for the address (if present - Downloadable orders may not have one)
         $addr = $this->address;
-        $addr->addressable()->associate($order);
-        $addr->save();
+        if($addr) {
+            $addr->addressable()->associate($order);
+            $addr->save();
+        }
 
         // and any offers:
         $offerUses = $this->offerUses()->update(['target_type' => get_class($order)]);
-        // $offerUses->target()->associate($order);
 
         OrderConfirmed::dispatch($this);
 
