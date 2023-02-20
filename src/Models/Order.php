@@ -15,6 +15,8 @@ use AscentCreative\Checkout\Models\OrderItem;
 use AscentCreative\Transact\Models\Transaction;
 use AscentCreative\Transact\Traits\Transactable;
 
+use AscentCreative\Geo\Traits\HasAddress;
+
 use Carbon\Carbon;
 
 /**
@@ -22,7 +24,7 @@ use Carbon\Carbon;
  */
 class Order extends OrderBase
 {
-    use HasFactory, Transactable;
+    use HasFactory, HasAddress, Transactable;
     
     /*
     * Uses a global scope to ensure we never include un-completed orders (baskets) when requesting orders

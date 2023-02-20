@@ -10,7 +10,7 @@
 
 
 
-@section('order.sidebar')
+@section('order.summary')
    
 <div class="sb_block">
     <div class="sb_block_head">Order Info</div>
@@ -47,8 +47,6 @@
         </div>
     </div> --}}
 
-    <div class="text-center">
-        <A href="{{ route('checkout-all-orders') }}" class="button"><i class="bi-caret-left-fill"></i> Back to orders list</A>
-    </div>
+
         
 @endsection

@@ -60,6 +60,10 @@ class ZendImport extends Command
 
         $res = DB::connection('zend')->select('select * from store_order where status != "Precheckout"');      
 
+        $bar = $this->output->createProgressBar(count($res));
+ 
+        $bar->start();
+
         foreach($res as $zOrder) {
 
             $order = Order::firstOrCreate([
@@ -83,6 +87,7 @@ class ZendImport extends Command
             $order->customer()->associate($cust);
 
             $order->shipping_cost = $zOrder->totalHandling;
+            $order->uuid = $zOrder->idBasket;
 
             $order->save();
 
@@ -146,10 +151,12 @@ class ZendImport extends Command
             }   
             $order->items()->createMany($items);
 
+            $bar->advance();
+
 
         } 
 
-
+        $bar->finish();
 
         return 0;
     }

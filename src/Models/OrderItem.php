@@ -21,7 +21,7 @@ class OrderItem extends Base
     public $fillable = ['order_id', 'sellable_type', 'sellable_id', 'sku', 'qty', 'itemPrice', 'title'];
 
     public function sellable() {
-        return $this->morphTo(); //->withUnpublished();
+        return $this->morphTo()->withoutGlobalScope('published'); // directly reference the scope to fail quietly if models don't have publishable trait
     }
    
     public static function boot() {
