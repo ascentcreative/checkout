@@ -1,9 +1,9 @@
 <div class="centralise p-0">
     <H1 class="mb-4" style="font-size: x2rem;">Your Basket</H1>
 
-    <div class="grid" style="display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))">
+    <div class="basket-grid" style="">
 
-        <div style="grid-column: 1 / span 2;">
+        <div class="basket-items">
     
             <div class="border bg-white p-3">
                

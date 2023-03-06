@@ -1,4 +1,4 @@
-<div class="basket-tab border bg-white p-3 mb-3" id="tab-details">
+<div class="basket-tab border bg-white p-3 mb-3 @if($current_tab == 'details') active @endif" id="tab-details">
 @if(config('checkout.anonymous_checkout') || auth()->user())
 
     <div class="flex flex-between">
@@ -42,6 +42,7 @@
 @else 
 
     <div wire:ignore>
+        <h4>Login to Checkout</h4>
     {{-- Anonymous Checkout disallowed and no current user - need user to login --}}
     @include('auth.loginform', ['intended'=>'/basket'])
     </div>
@@ -52,7 +53,7 @@
 
 @if(basket()->hasPhysicalItems()) 
 
-    <div class="basket-tab border bg-white p-3 mb-3">
+    <div class="basket-tab border bg-white p-3 mb-3 @if($current_tab == 'shipping') active @endif">
 
         <div class="flex flex-between">
             <H4>Shipping Information</H4>
@@ -95,13 +96,13 @@
 
                 @if(basket()->needsAddress())
                     {{-- Address (if needed) --}}
-                    <label>Shipping Address:</label>
+                    <h5>Shipping Address:</h5>
                     @php $addr = basket()->getShippingAddress(); @endphp
-                    <x-cms-form-input type="text" name="address[street1]" label="" placeholder="Address line 1" :value="$addr->street1 ?? ''" wrapper="simple"/>
-                    <x-cms-form-input type="text" name="address[street2]" label="" placeholder="Address line 2" :value="$addr->street2 ?? ''" wrapper="simple"/>
-                    <x-cms-form-input type="text" name="address[city]" label="" placeholder="City" :value="$addr->city ?? ''" wrapper="simple"/>
-                    <x-cms-form-input type="text" name="address[state]" label="" placeholder="County" :value="$addr->state ?? ''" wrapper="simple"/>
-                    <x-cms-form-input type="text" name="address[zip]" label="" placeholder="Postcode / Zip" :value="$addr->zip ?? ''" wrapper="simple"/>
+                    <x-cms-form-input type="text" name="address[street1]" label="Address line 1" placeholder="" :value="$addr->street1 ?? ''" wrapper="simple"/>
+                    <x-cms-form-input type="text" name="address[street2]" label="Address line 2" placeholder="" :value="$addr->street2 ?? ''" wrapper="simple"/>
+                    <x-cms-form-input type="text" name="address[city]" label="City" placeholder="" :value="$addr->city ?? ''" wrapper="simple"/>
+                    <x-cms-form-input type="text" name="address[state]" label="County" placeholder="" :value="$addr->state ?? ''" wrapper="simple"/>
+                    <x-cms-form-input type="text" name="address[zip]" label="Postcode / Zip" placeholder="" :value="$addr->zip ?? ''" wrapper="simple"/>
 
                 @endif
 
@@ -123,7 +124,7 @@
     </div>
 @endif
 
-<div class="basket-tab border bg-white p-3 mb-3">
+<div class="basket-tab border bg-white p-3 mb-3 @if($current_tab == 'payment') active @endif">
 
     <H4>Payment</H4>
 

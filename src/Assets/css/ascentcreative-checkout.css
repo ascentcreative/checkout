@@ -52,3 +52,23 @@ th:first-child, th:last-child {
     color: white;
     background: var(--success);
 }
+
+
+.basket-grid {
+    display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.basket-grid .basket-items {
+    grid-column: 1 / span 2;
+}
+
+@media only screen and (max-width: 870px) {
+    .basket-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .basket-grid .basket-items {
+        grid-column: 1;
+    }
+}
+
