@@ -13,7 +13,7 @@
 
     @include('checkout::basket.contents')   
 
-    @if(!basket()->isEmpty)
+    @if(!basket()->isEmpty())
         <a href="/basket/clear" class="ajax-link button btn-small" data-response-target="refresh"><i class="bi-x-circle-fill"></i> Clear Basket</a>
     @endif
 
@@ -23,7 +23,7 @@
 
 @section('basket.sidebar')
 
-    @if(!basket()->isEmpty)
+    @if(!basket()->isEmpty())
 
         {{-- if the site requires a login to checkout, display a login  / register form which redirects back to the basket --}}
         @if(!@config('checkout.anonymous_checkout') && !Auth::user())
@@ -91,7 +91,7 @@
     });
 
     $(document).on('transact-success', function() {
-        window.location = '/basket/complete';
+        window.location = '/basket/orderconfirmed/{{ basket()->uuid }}';
     });
    
 
