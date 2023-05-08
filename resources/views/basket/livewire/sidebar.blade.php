@@ -132,7 +132,7 @@
     <div class="@if(($current_tab == 'payment')) d-block @else d-none @endif">
         <div wire:ignore>
             {{-- @include('checkout::payment.' . config('transact.payment_provider')) --}}
-            <x-transact-stripe-ui id="stripe-ui" />
+            <x-transact-stripe-elements id="stripe-ui" />
         </div>
     </div>
     {{-- @endif --}}
@@ -177,6 +177,7 @@
              });
 
          });
+
     });
 
     
