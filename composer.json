@@ -23,6 +23,7 @@
   "require": {
     "ascentcreative/transact": "dev-dev",
     "ascentcreative/offer": "dev-dev",
+    "ascentcreative/geo": "dev-dev",
     "livewire/livewire": "^2.10"
   },
   "repositories": [
