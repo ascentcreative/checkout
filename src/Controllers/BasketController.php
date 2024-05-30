@@ -59,6 +59,18 @@ class BasketController extends Controller
 
     }
 
+     /**
+     * Transact v2 endpoint:
+     * 
+     * @return [type]
+     */
+    public function transact() {
+       
+        return \AscentCreative\Transact\Transact::pay(basket()->commit());
+ 
+    }
+
+
 
     /** 
      * User completed checkout.

@@ -2,7 +2,7 @@
 @if(config('checkout.anonymous_checkout') || auth()->user())
 
     <div class="flex flex-between">
-    <H4>Your Details</H4>  
+    <H4>Your Details</H4> 
         @if($current_tab != 'details' && $tab_status['details'] == 'complete')
             <a href="#" wire:click="setCurrentTab('details')" class="">Edit</a>
         @endif
@@ -132,7 +132,7 @@
     <div class="@if(($current_tab == 'payment')) d-block @else d-none @endif">
         <div wire:ignore>
             {{-- @include('checkout::payment.' . config('transact.payment_provider')) --}}
-            <x-transact-stripe-elements id="stripe-ui" />
+            <x-transact-stripe-ui id="stripe-ui" />
         </div>
     </div>
     {{-- @endif --}}

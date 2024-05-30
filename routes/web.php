@@ -44,6 +44,12 @@ Route::middleware(['web'])->group(function () {
         Route::get('/basket/orderconfirmed/{uuid}', [AscentCreative\Checkout\Controllers\BasketController::class, 'orderconfirmed']);
         Route::get('/basket/pollorderconfirmation/{uuid}', [AscentCreative\Checkout\Controllers\BasketController::class, 'pollorderconfirmation']);
 
+
+         // Transact v2 Endpoint method in controller
+         Route::post('/basket', [AscentCreative\Checkout\Controllers\BasketController::class, 'transact'])->name('checkout.transact.v2');
+        
+
+
         Route::post('/basket/transact', function() {
 
             // need to commit the basket to the DB
